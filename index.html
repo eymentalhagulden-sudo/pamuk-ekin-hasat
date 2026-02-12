@@ -18,16 +18,63 @@ font-family:'Poppins', sans-serif;
 body{
 color:white;
 background:
-linear-gradient(rgba(0,40,20,0.65), rgba(0,30,15,0.75)),
+linear-gradient(rgba(0,40,20,0.6), rgba(0,30,15,0.7)),
 url("https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=1600&q=80");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
+overflow-x:hidden;
+}
+
+/* Köşe Görselleri */
+.corner{
+position:fixed;
+width:230px;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 0 25px rgba(0,0,0,0.6);
+animation:float 6s ease-in-out infinite;
+z-index:0;
+}
+
+.corner img{
+width:100%;
+height:100%;
+object-fit:cover;
+filter:brightness(0.9);
+}
+
+.corner span{
+position:absolute;
+bottom:10px;
+left:10px;
+font-size:14px;
+background:rgba(0,0,0,0.6);
+padding:5px 10px;
+border-radius:10px;
+}
+
+.top-right{
+top:20px;
+right:20px;
+}
+
+.bottom-left{
+bottom:20px;
+left:20px;
+}
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0px);}
 }
 
 section{
 padding:100px 40px;
 text-align:center;
+position:relative;
+z-index:1;
 }
 
 h1{
@@ -88,6 +135,17 @@ text-align:center;
 
 <body>
 
+<!-- Köşe Görselleri -->
+<div class="corner top-right">
+<img src="https://images.unsplash.com/photo-1598514982445-38f6b2c6a4dd?auto=format&fit=crop&w=600&q=80">
+<span>Pamuk Tarlası</span>
+</div>
+
+<div class="corner bottom-left">
+<img src="https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=600&q=80">
+<span>Tarım Alanı</span>
+</div>
+
 <section>
 <h1>Akıllı Pamuk Altı Sensör Mekanizması</h1>
 <p>Pamuk kök bölgesine yerleştirilen sensör sistemi ile toprak nemi sürekli analiz edilir ve verim kaybı önlenir.</p>
@@ -103,6 +161,7 @@ Nem kritik seviyenin altına düştüğünde erken müdahale sağlanır.
 ✔ Su tasarrufu sağlar  
 ✔ Ürün verimini artırır  
 ✔ Akıllı tarımı destekler  
+✔ Sürdürülebilir üretim sağlar  
 </div>
 </section>
 
@@ -166,31 +225,24 @@ switch(this.value){
 case "sanliurfa":
 bilgi = "Şanlıurfa Türkiye'nin en büyük pamuk üretim merkezidir. GAP sulama sistemi sayesinde yüksek verim elde edilir.";
 break;
-
 case "diyarbakir":
 bilgi = "Diyarbakır sıcak iklimi ve verimli toprakları ile pamuk üretimi için uygundur.";
 break;
-
 case "mardin":
-bilgi = "Mardin'de modern sulama teknikleri ile pamuk üretimi her yıl artmaktadır.";
+bilgi = "Mardin'de modern sulama teknikleri ile pamuk üretimi artmaktadır.";
 break;
-
 case "izmir":
 bilgi = "İzmir Ege Bölgesi'nde kaliteli pamuk lif üretimi ile bilinir.";
 break;
-
 case "aydin":
 bilgi = "Aydın yüksek verimli ve teknolojik pamuk üretimi ile öne çıkar.";
 break;
-
 case "manisa":
 bilgi = "Manisa'da gelişmiş tarım teknikleri ile pamuk üretimi yapılmaktadır.";
 break;
-
 case "denizli":
 bilgi = "Denizli tekstil sanayisi ile bağlantılı olarak pamuk üretiminde önemlidir.";
 break;
-
 default:
 bilgi = "Seçilen ile ait bilgiler burada gösterilecektir.";
 }
@@ -202,6 +254,3 @@ aciklama.innerHTML = bilgi;
 
 </body>
 </html>
-<img src="https://images.unsplash.com/photo-1598514982445-38f6b2c6a4dd?auto=format&fit=crop&w=600&q=80" class="corner top-right">
-
-<img src="https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=600&q=80" class="corner bottom-left">
