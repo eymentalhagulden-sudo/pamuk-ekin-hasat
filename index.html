@@ -18,17 +18,15 @@ scroll-behavior:smooth;
 
 body{
 color:white;
-background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1e3c72);
-background-size: 400% 400%;
-animation: gradient 12s ease infinite;
+background:
+linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+url("https://images.unsplash.com/photo-1598514982445-38f6b2c6a4dd");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
 }
 
-@keyframes gradient{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-
+/* NAV */
 nav{
 position:fixed;
 width:100%;
@@ -36,7 +34,7 @@ top:0;
 display:flex;
 justify-content:space-between;
 padding:20px 50px;
-background:rgba(0,0,0,0.4);
+background:rgba(0,0,0,0.6);
 backdrop-filter:blur(10px);
 z-index:1000;
 }
@@ -45,6 +43,7 @@ nav h2{
 color:#00ffd5;
 }
 
+/* HERO */
 .hero{
 height:100vh;
 display:flex;
@@ -58,29 +57,18 @@ padding:20px;
 .hero h1{
 font-size:60px;
 margin-bottom:20px;
-animation: fadeDown 1.5s ease;
 }
 
 .hero p{
 max-width:700px;
 font-size:20px;
-opacity:0.9;
-animation: fadeUp 1.5s ease;
 }
 
-@keyframes fadeDown{
-from{opacity:0; transform:translateY(-30px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes fadeUp{
-from{opacity:0; transform:translateY(30px);}
-to{opacity:1; transform:translateY(0);}
-}
-
+/* SECTION */
 .section{
 padding:120px 40px;
 text-align:center;
+background:rgba(0,0,0,0.7);
 }
 
 .section h2{
@@ -96,36 +84,44 @@ padding:40px;
 border-radius:25px;
 max-width:900px;
 margin:auto;
-transition:0.4s;
+margin-bottom:30px;
 }
 
-.card:hover{
-transform:scale(1.03);
+/* TEAM */
+.team{
+padding:100px 40px;
+text-align:center;
+background:rgba(0,0,0,0.85);
 }
 
-select{
-padding:12px;
-font-size:16px;
-border-radius:10px;
-border:none;
-margin-top:20px;
+.team h2{
+color:#00ffd5;
+margin-bottom:40px;
+}
+
+.team-members{
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.member{
+background:rgba(255,255,255,0.1);
+padding:30px;
+border-radius:20px;
+min-width:220px;
+transition:0.3s;
+}
+
+.member:hover{
+transform:scale(1.05);
 }
 
 footer{
 background:black;
 text-align:center;
 padding:30px;
-}
-
-.fade{
-opacity:0;
-transform:translateY(40px);
-transition:1s;
-}
-
-.fade.show{
-opacity:1;
-transform:translateY(0);
 }
 </style>
 </head>
@@ -138,32 +134,34 @@ transform:translateY(0);
 
 <div class="hero">
 <h1>Pamuk Altı Sensör Mekanizması</h1>
-<p>Geliştirdiğimiz akıllı sensör sistemi pamuk kök bölgesine yerleştirilir ve toprak nemi, sıcaklık ve verim risklerini analiz ederek üretimi optimize eder.</p>
+<p>Pamuk kök bölgesine yerleştirilen sensör sistemi ile toprak nemi ve sıcaklık analiz edilir, verim kaybı önlenir.</p>
 </div>
 
-<div class="section fade">
-<h2>Mekanizmamız Nasıl Çalışır?</h2>
+<div class="section">
+<h2>Mekanizmamız</h2>
 <div class="card">
-Toprağa yerleştirilen sensör modülü nem ve sıcaklık değerlerini sürekli ölçer. Kritik eşik değerlerinde sistem veri kaydı oluşturur ve üretim planlamasına katkı sağlar. Bu sayede su tasarrufu ve verim artışı sağlanır.
+Sensör modülü pamuk bitkisinin altına yerleştirilir. Toprak nem seviyesi düştüğünde sistem veri üretir ve çiftçiye müdahale imkanı sağlar. Bu sayede su tasarrufu ve yüksek verim elde edilir.
 </div>
 </div>
 
-<div class="section fade">
-<h2>İl Bazlı Analiz</h2>
+<div class="team">
+<h2>Proje Ekibi</h2>
 
-<select onchange="ilBilgisi(this.value)">
-<option value="">İl Seçiniz</option>
-<option value="sanliurfa">Şanlıurfa</option>
-<option value="diyarbakir">Diyarbakır</option>
-<option value="mardin">Mardin</option>
-<option value="izmir">İzmir</option>
-<option value="aydin">Aydın</option>
-<option value="manisa">Manisa</option>
-<option value="denizli">Denizli</option>
-</select>
+<div class="team-members">
+<div class="member">
+<h3>Umut Kardaş</h3>
+<p>Proje Geliştirici</p>
+</div>
 
-<div class="card" id="ilBilgi" style="margin-top:30px;">
-İl seçiniz...
+<div class="member">
+<h3>Eymen Gülden</h3>
+<p>Sistem Tasarım</p>
+</div>
+
+<div class="member">
+<h3>Efe Şşutgil</h3>
+<p>Yazılım & Analiz</p>
+</div>
 </div>
 
 </div>
@@ -171,50 +169,6 @@ Toprağa yerleştirilen sensör modülü nem ve sıcaklık değerlerini sürekli
 <footer>
 © 2026 Teknofest Akıllı Pamuk Projesi
 </footer>
-
-<script>
-function ilBilgisi(il){
-
-let bilgi="";
-
-if(il=="sanliurfa"){
-bilgi="Şanlıurfa: Yüksek sıcaklık nedeniyle nem sensörleri kritik öneme sahiptir.";
-}
-else if(il=="diyarbakir"){
-bilgi="Diyarbakır: Kurak dönemlerde sistem erken uyarı sağlar.";
-}
-else if(il=="mardin"){
-bilgi="Mardin: Toprak yapısına göre sensör kalibrasyonu yapılır.";
-}
-else if(il=="izmir"){
-bilgi="İzmir: Ege ikliminde sıcaklık takibi verimi artırır.";
-}
-else if(il=="aydin"){
-bilgi="Aydın: Modern tarım entegrasyonu ile yüksek verim hedeflenir.";
-}
-else if(il=="manisa"){
-bilgi="Manisa: İklim değişkenliğine karşı veri analizi yapılır.";
-}
-else if(il=="denizli"){
-bilgi="Denizli: Sensör sistemi ile su tasarrufu sağlanır.";
-}
-else{
-bilgi="İl seçiniz...";
-}
-
-document.getElementById("ilBilgi").innerHTML=bilgi;
-}
-
-const faders=document.querySelectorAll('.fade');
-window.addEventListener('scroll',()=>{
-faders.forEach(el=>{
-const rect=el.getBoundingClientRect().top;
-if(rect<window.innerHeight-100){
-el.classList.add('show');
-}
-});
-});
-</script>
 
 </body>
 </html>
