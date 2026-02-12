@@ -12,12 +12,11 @@
 body{
 color:white;
 background:
-linear-gradient(rgba(0,40,20,0.6), rgba(0,30,15,0.7)),
+linear-gradient(rgba(0,35,18,0.65), rgba(0,25,12,0.75)),
 url("https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=1600&q=80");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
-overflow-x:hidden;
 }
 
 .top-bar{
@@ -35,7 +34,6 @@ select{
 padding:8px;
 border-radius:8px;
 border:none;
-margin-left:10px;
 }
 
 section{
@@ -43,16 +41,17 @@ padding:120px 40px;
 text-align:center;
 }
 
-h1{font-size:48px;margin-bottom:20px;}
-h2{color:#00ffaa;margin-bottom:25px;font-size:32px;}
+h1{font-size:46px;margin-bottom:20px;}
+h2{color:#00ffaa;margin-bottom:25px;font-size:30px;}
 
 .card{
-background:rgba(0,0,0,0.65);
-padding:35px;
-border-radius:18px;
-max-width:900px;
+background:rgba(0,0,0,0.7);
+padding:40px;
+border-radius:20px;
+max-width:1000px;
 margin:25px auto;
-line-height:1.8;
+line-height:1.9;
+font-size:17px;
 }
 
 footer{
@@ -66,16 +65,13 @@ text-align:center;
 <body>
 
 <div class="top-bar">
-<div>
 <select id="languageSelect">
 <option value="tr">Türkçe</option>
 <option value="en">English</option>
 <option value="de">Deutsch</option>
 <option value="ru">Русский</option>
 </select>
-</div>
 
-<div>
 <select id="citySelect">
 <option value="">İl Seçiniz</option>
 <option value="sanliurfa">Şanlıurfa</option>
@@ -87,133 +83,96 @@ text-align:center;
 <option value="denizli">Denizli</option>
 </select>
 </div>
-</div>
 
 <section>
 <h1 id="title">Akıllı Pamuk Altı Sensör Mekanizması</h1>
-<p id="intro">
-Pamuk üretiminde su tasarrufu ve verim artışı sağlamak amacıyla geliştirilmiş akıllı sensör sistemidir.
-</p>
+<p id="intro"></p>
 </section>
 
 <section>
-<h2 id="workTitle">Mekanizma Nasıl Çalışır?</h2>
-<div class="card" id="workText">
-Toprak altına yerleştirilen nem sensörleri düzenli ölçüm yapar. Kritik seviyede uyarı sistemi devreye girer ve bilinçli sulama sağlanır.
-</div>
+<h2 id="historyTitle"></h2>
+<div class="card" id="historyText"></div>
 </section>
 
 <section>
-<h2 id="regionTitle">Bölgesel Üretim Analizi</h2>
-<div class="card" id="regionText">
-İl seçerek bölgesel üretim bilgilerini görüntüleyebilirsiniz.
-</div>
+<h2 id="usageTitle"></h2>
+<div class="card" id="usageText"></div>
+</section>
+
+<section>
+<h2 id="workTitle"></h2>
+<div class="card" id="workText"></div>
+</section>
+
+<section>
+<h2 id="regionTitle"></h2>
+<div class="card" id="regionText"></div>
 </section>
 
 <footer>
-© 2026 Teknofest Akıllı Pamuk Projesi
+© 2026 Teknofest Akıllı Pamuk Projesi - Eymen
 </footer>
 
 <script>
-let currentLang = "tr";
 
-const translations = {
+let currentLang="tr";
+
+const translations={
 tr:{
 title:"Akıllı Pamuk Altı Sensör Mekanizması",
-intro:"Pamuk üretiminde su tasarrufu ve verim artışı sağlamak amacıyla geliştirilmiş akıllı sensör sistemidir.",
-workTitle:"Mekanizma Nasıl Çalışır?",
-workText:"Toprak altına yerleştirilen nem sensörleri düzenli ölçüm yapar. Kritik seviyede sistem bilinçli sulama sağlar.",
+intro:"Bu proje, pamuk üretiminde su tasarrufu sağlamak, verimi artırmak ve sürdürülebilir tarımı desteklemek amacıyla geliştirilmiştir.",
+historyTitle:"Pamuğun Tarihsel Gelişimi",
+historyText:"Pamuk bitkisinin tarihi yaklaşık 7000 yıl öncesine dayanmaktadır. İlk olarak Hindistan ve Güney Amerika’da yetiştirildiği bilinmektedir. Antik medeniyetlerde pamuk, dayanıklı ve nefes alabilen yapısı nedeniyle tekstil üretiminde kullanılmıştır. Sanayi Devrimi ile birlikte pamuk üretimi dünya çapında artmış ve küresel ticaretin temel ürünlerinden biri haline gelmiştir. Günümüzde pamuk, hem ekonomik hem de stratejik açıdan büyük öneme sahiptir.",
+usageTitle:"Pamuk Nerelerde Kullanılır?",
+usageText:"Pamuk en çok tekstil sektöründe kullanılmaktadır. Kıyafetler, çarşaflar, havlular ve birçok günlük ürün pamuktan üretilmektedir. Bunun yanında medikal alanda pamuk, pansuman malzemesi ve hijyen ürünlerinde kullanılır. Ayrıca pamuk yağı gıda sektöründe, pamuk çekirdeği ise hayvan yemi üretiminde değerlendirilir. Bu çok yönlü kullanım alanı pamuğu vazgeçilmez bir tarım ürünü yapmaktadır.",
+workTitle:"Akıllı Sensör Mekanizması Nasıl Çalışır?",
+workText:"Toprak altına yerleştirilen nem sensörleri, toprağın anlık nem oranını sürekli olarak ölçer. Elde edilen veriler dijital bir sisteme aktarılır ve analiz edilir. Nem seviyesi belirlenen kritik eşik değerinin altına düştüğünde sistem otomatik uyarı verir veya sulama mekanizmasını devreye alır. Bu sayede gereksiz su tüketimi önlenir, bitki kökleri sağlıklı gelişir ve maksimum verim elde edilir.",
 regionTitle:"Bölgesel Üretim Analizi",
-defaultRegion:"İl seçerek bölgesel üretim bilgilerini görüntüleyebilirsiniz.",
+defaultRegion:"Lütfen bir il seçerek detaylı üretim bilgilerini görüntüleyiniz.",
 cities:{
-sanliurfa:"Şanlıurfa Türkiye'nin en büyük pamuk üretim merkezidir.",
-diyarbakir:"Diyarbakır sıcak iklimi ile pamuk üretimine uygundur.",
-mardin:"Mardin'de modern sulama teknikleri kullanılmaktadır.",
-izmir:"İzmir kaliteli pamuk lif üretimi ile bilinir.",
-aydin:"Aydın yüksek verimli pamuk üretim merkezidir.",
-manisa:"Manisa gelişmiş tarım teknikleri ile üretim yapar.",
-denizli:"Denizli tekstil sanayisi ile bağlantılıdır."
-}
-},
-en:{
-title:"Smart Cotton Soil Sensor System",
-intro:"An intelligent sensor system developed to increase productivity and save water in cotton farming.",
-workTitle:"How Does It Work?",
-workText:"Moisture sensors placed under the soil measure regularly and enable smart irrigation.",
-regionTitle:"Regional Production Analysis",
-defaultRegion:"Select a city to see regional production information.",
-cities:{
-sanliurfa:"Sanliurfa is the largest cotton production center in Turkey.",
-diyarbakir:"Diyarbakir has a suitable climate for cotton farming.",
-mardin:"Modern irrigation techniques are used in Mardin.",
-izmir:"Izmir is known for high quality cotton fiber.",
-aydin:"Aydin is a high efficiency cotton production region.",
-manisa:"Advanced farming techniques are used in Manisa.",
-denizli:"Denizli is important for textile-related cotton production."
-}
-},
-de:{
-title:"Intelligentes Baumwoll-Sensorsystem",
-intro:"Ein intelligentes Sensorsystem zur Steigerung der Produktivität und Wassereinsparung.",
-workTitle:"Wie funktioniert es?",
-workText:"Bodensensoren messen regelmäßig die Feuchtigkeit und ermöglichen intelligente Bewässerung.",
-regionTitle:"Regionale Produktionsanalyse",
-defaultRegion:"Wählen Sie eine Stadt aus.",
-cities:{
-sanliurfa:"Sanliurfa ist das größte Baumwollzentrum der Türkei.",
-diyarbakir:"Diyarbakir hat ein geeignetes Klima für Baumwolle.",
-mardin:"In Mardin werden moderne Bewässerungstechniken eingesetzt.",
-izmir:"Izmir ist bekannt für hochwertige Baumwollfasern.",
-aydin:"Aydin ist eine effiziente Produktionsregion.",
-manisa:"In Manisa werden moderne Anbaumethoden verwendet.",
-denizli:"Denizli ist wichtig für die Textilproduktion."
-}
-},
-ru:{
-title:"Интеллектуальная система датчиков хлопка",
-intro:"Система для повышения урожайности и экономии воды.",
-workTitle:"Как это работает?",
-workText:"Датчики влажности почвы обеспечивают умное орошение.",
-regionTitle:"Региональный анализ",
-defaultRegion:"Выберите город.",
-cities:{
-sanliurfa:"Шанлыурфа — крупнейший центр производства хлопка.",
-diyarbakir:"Диярбакыр имеет подходящий климат.",
-mardin:"В Мардине используются современные методы орошения.",
-izmir:"Измир известен качественным хлопком.",
-aydin:"Айдын — эффективный регион производства.",
-manisa:"В Манисе применяются современные технологии.",
-denizli:"Денизли важен для текстильной отрасли."
+sanliurfa:"Şanlıurfa, Türkiye’nin en büyük pamuk üretim merkezidir. GAP projesi sayesinde modern sulama teknikleri uygulanmaktadır.",
+diyarbakir:"Diyarbakır, geniş tarım arazileri ve sıcak iklimi sayesinde pamuk üretimi için oldukça uygundur.",
+mardin:"Mardin’de pamuk üretimi son yıllarda artış göstermiştir ve modern tarım teknolojileri kullanılmaktadır.",
+izmir:"İzmir Ege Bölgesi’nin önemli pamuk üretim merkezlerinden biridir.",
+aydin:"Aydın yüksek kalite lif yapısıyla dikkat çeker.",
+manisa:"Manisa gelişmiş tarım altyapısıyla üretim yapmaktadır.",
+denizli:"Denizli tekstil sanayisi ile bağlantılı güçlü bir üretim bölgesidir."
 }
 }
 };
 
 function updateLanguage(){
-let t = translations[currentLang];
-document.getElementById("title").innerText = t.title;
-document.getElementById("intro").innerText = t.intro;
-document.getElementById("workTitle").innerText = t.workTitle;
-document.getElementById("workText").innerText = t.workText;
-document.getElementById("regionTitle").innerText = t.regionTitle;
+let t=translations[currentLang];
+document.getElementById("title").innerText=t.title;
+document.getElementById("intro").innerText=t.intro;
+document.getElementById("historyTitle").innerText=t.historyTitle;
+document.getElementById("historyText").innerText=t.historyText;
+document.getElementById("usageTitle").innerText=t.usageTitle;
+document.getElementById("usageText").innerText=t.usageText;
+document.getElementById("workTitle").innerText=t.workTitle;
+document.getElementById("workText").innerText=t.workText;
+document.getElementById("regionTitle").innerText=t.regionTitle;
 updateCity();
 }
 
 function updateCity(){
-let city = document.getElementById("citySelect").value;
-let t = translations[currentLang];
+let city=document.getElementById("citySelect").value;
+let t=translations[currentLang];
 if(city && t.cities[city]){
-document.getElementById("regionText").innerText = t.cities[city];
+document.getElementById("regionText").innerText=t.cities[city];
 }else{
-document.getElementById("regionText").innerText = t.defaultRegion;
+document.getElementById("regionText").innerText=t.defaultRegion;
 }
 }
 
-document.getElementById("languageSelect").addEventListener("change", function(){
-currentLang = this.value;
+document.getElementById("languageSelect").addEventListener("change",function(){
+currentLang=this.value;
 updateLanguage();
 });
 
-document.getElementById("citySelect").addEventListener("change", updateCity);
+document.getElementById("citySelect").addEventListener("change",updateCity);
+
+updateLanguage();
 
 </script>
 
