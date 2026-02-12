@@ -3,192 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pamuk Ekim ve Hasat | Teknofest Projesi</title>
+<title>Akıllı Pamuk Takip Sistemi</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
-
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', sans-serif;
+scroll-behavior:smooth;
 }
 
 body{
-    color:white;
-    background:
-    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-    url("https://images.unsplash.com/photo-1598514982445-38f6b2c6a4dd");
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
+color:white;
+background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #1e3c72);
+background-size: 400% 400%;
+animation: gradient 12s ease infinite;
 }
 
-/* NAVBAR */
+@keyframes gradient{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
 nav{
-    position:fixed;
-    width:100%;
-    top:0;
-    background:rgba(0,0,0,0.7);
-    padding:15px 50px;
-    display:flex;
-    justify-content:space-between;
-    z-index:1000;
+position:fixed;
+width:100%;
+top:0;
+display:flex;
+justify-content:space-between;
+padding:20px 50px;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+z-index:1000;
 }
 
 nav h2{
-    color:#90ee90;
+color:#00ffd5;
 }
 
-nav ul{
-    list-style:none;
-    display:flex;
-}
-
-nav ul li{
-    margin-left:25px;
-}
-
-nav ul li a{
-    text-decoration:none;
-    color:white;
-    font-weight:500;
-    transition:0.3s;
-}
-
-nav ul li a:hover{
-    color:#90ee90;
-}
-
-/* HERO */
 .hero{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    flex-direction:column;
-    padding:20px;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
 }
 
 .hero h1{
-    font-size:60px;
-    margin-bottom:20px;
+font-size:60px;
+margin-bottom:20px;
+animation: fadeDown 1.5s ease;
 }
 
 .hero p{
-    font-size:20px;
-    max-width:700px;
+max-width:700px;
+font-size:20px;
+opacity:0.9;
+animation: fadeUp 1.5s ease;
 }
 
-/* SECTIONS */
+@keyframes fadeDown{
+from{opacity:0; transform:translateY(-30px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes fadeUp{
+from{opacity:0; transform:translateY(30px);}
+to{opacity:1; transform:translateY(0);}
+}
+
 .section{
-    padding:100px 50px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    flex-wrap:wrap;
+padding:120px 40px;
+text-align:center;
 }
 
-.section:nth-child(even){
-    background:rgba(0,0,0,0.7);
+.section h2{
+font-size:40px;
+margin-bottom:40px;
+color:#00ffd5;
 }
 
-.section .text{
-    flex:1;
-    min-width:300px;
-    padding:20px;
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+padding:40px;
+border-radius:25px;
+max-width:900px;
+margin:auto;
+transition:0.4s;
 }
 
-.section .text h2{
-    color:#90ee90;
-    margin-bottom:20px;
+.card:hover{
+transform:scale(1.03);
 }
 
-.section .image{
-    flex:1;
-    min-width:300px;
-    padding:20px;
+select{
+padding:12px;
+font-size:16px;
+border-radius:10px;
+border:none;
+margin-top:20px;
 }
 
-.section img{
-    width:100%;
-    border-radius:15px;
-}
-
-/* FOOTER */
 footer{
-    text-align:center;
-    padding:30px;
-    background:black;
+background:black;
+text-align:center;
+padding:30px;
 }
 
+.fade{
+opacity:0;
+transform:translateY(40px);
+transition:1s;
+}
+
+.fade.show{
+opacity:1;
+transform:translateY(0);
+}
 </style>
 </head>
 
 <body>
 
 <nav>
-    <h2>Pamuk Projesi</h2>
-    <ul>
-        <li><a href="#ekim">Ekim</a></li>
-        <li><a href="#surec">Süreç</a></li>
-        <li><a href="#hasat">Hasat</a></li>
-        <li><a href="#proje">Projemiz</a></li>
-    </ul>
+<h2>Akıllı Pamuk Sistemi</h2>
 </nav>
 
 <div class="hero">
-    <h1>Pamuk Ekim ve Hasat Projesi</h1>
-    <p>Tarım teknolojileri ve sürdürülebilir üretim yöntemleri ile pamuk verimliliğini artırmayı hedefleyen Teknofest çalışması.</p>
+<h1>Pamuk Altı Sensör Mekanizması</h1>
+<p>Geliştirdiğimiz akıllı sensör sistemi pamuk kök bölgesine yerleştirilir ve toprak nemi, sıcaklık ve verim risklerini analiz ederek üretimi optimize eder.</p>
 </div>
 
-<section class="section" id="ekim">
-    <div class="text">
-        <h2>Pamuk Ekim Aşaması</h2>
-        <p>Pamuk ekimi ilkbahar aylarında yapılır. Toprak sıcaklığı minimum 15°C olmalıdır. Toprak hazırlığı, tohum seçimi ve ekim aralığı verim açısından büyük önem taşır.</p>
-    </div>
-    <div class="image">
-        <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3" alt="">
-    </div>
-</section>
+<div class="section fade">
+<h2>Mekanizmamız Nasıl Çalışır?</h2>
+<div class="card">
+Toprağa yerleştirilen sensör modülü nem ve sıcaklık değerlerini sürekli ölçer. Kritik eşik değerlerinde sistem veri kaydı oluşturur ve üretim planlamasına katkı sağlar. Bu sayede su tasarrufu ve verim artışı sağlanır.
+</div>
+</div>
 
-<section class="section" id="surec">
-    <div class="image">
-        <img src="https://images.unsplash.com/photo-1500930287596-c1ecaa373bb2" alt="">
-    </div>
-    <div class="text">
-        <h2>Yetiştirme Süreci</h2>
-        <p>Bitkinin gelişim sürecinde sulama, gübreleme ve zararlı kontrolü düzenli olarak yapılmalıdır. Modern tarım teknolojileri verim artışı sağlamaktadır.</p>
-    </div>
-</section>
+<div class="section fade">
+<h2>İl Bazlı Analiz</h2>
 
-<section class="section" id="hasat">
-    <div class="text">
-        <h2>Hasat Süreci</h2>
-        <p>Pamuk kozalakları olgunlaştığında açılır ve hasat makineleri ile toplanır. Hasat zamanı kaliteyi doğrudan etkiler.</p>
-    </div>
-    <div class="image">
-        <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e" alt="">
-    </div>
-</section>
+<select onchange="ilBilgisi(this.value)">
+<option value="">İl Seçiniz</option>
+<option value="sanliurfa">Şanlıurfa</option>
+<option value="diyarbakir">Diyarbakır</option>
+<option value="mardin">Mardin</option>
+<option value="izmir">İzmir</option>
+<option value="aydin">Aydın</option>
+<option value="manisa">Manisa</option>
+<option value="denizli">Denizli</option>
+</select>
 
-<section class="section" id="proje">
-    <div class="image">
-        <img src="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8" alt="">
-    </div>
-    <div class="text">
-        <h2>Projemizin Amacı</h2>
-        <p>Bu proje kapsamında pamuk üretim sürecini analiz ederek sürdürülebilir ve teknoloji destekli çözümler geliştirmeyi hedefledik. Amaç, verimlilik artışı ve çevre dostu üretimdir.</p>
-    </div>
-</section>
+<div class="card" id="ilBilgi" style="margin-top:30px;">
+İl seçiniz...
+</div>
+
+</div>
 
 <footer>
-    © 2026 Teknofest Pamuk Projesi | Takımınızın Adı
+© 2026 Teknofest Akıllı Pamuk Projesi
 </footer>
+
+<script>
+function ilBilgisi(il){
+
+let bilgi="";
+
+if(il=="sanliurfa"){
+bilgi="Şanlıurfa: Yüksek sıcaklık nedeniyle nem sensörleri kritik öneme sahiptir.";
+}
+else if(il=="diyarbakir"){
+bilgi="Diyarbakır: Kurak dönemlerde sistem erken uyarı sağlar.";
+}
+else if(il=="mardin"){
+bilgi="Mardin: Toprak yapısına göre sensör kalibrasyonu yapılır.";
+}
+else if(il=="izmir"){
+bilgi="İzmir: Ege ikliminde sıcaklık takibi verimi artırır.";
+}
+else if(il=="aydin"){
+bilgi="Aydın: Modern tarım entegrasyonu ile yüksek verim hedeflenir.";
+}
+else if(il=="manisa"){
+bilgi="Manisa: İklim değişkenliğine karşı veri analizi yapılır.";
+}
+else if(il=="denizli"){
+bilgi="Denizli: Sensör sistemi ile su tasarrufu sağlanır.";
+}
+else{
+bilgi="İl seçiniz...";
+}
+
+document.getElementById("ilBilgi").innerHTML=bilgi;
+}
+
+const faders=document.querySelectorAll('.fade');
+window.addEventListener('scroll',()=>{
+faders.forEach(el=>{
+const rect=el.getBoundingClientRect().top;
+if(rect<window.innerHeight-100){
+el.classList.add('show');
+}
+});
+});
+</script>
 
 </body>
 </html>
-
