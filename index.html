@@ -11,12 +11,17 @@
 
 body{
 color:white;
-background:
-linear-gradient(rgba(0,35,18,0.65), rgba(0,25,12,0.75)),
-url("https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=1600&q=80");
+background:url("https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=1920&q=80");
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
+overflow-x:hidden;
+animation:fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;}
+to{opacity:1;}
 }
 
 .top-bar{
@@ -26,36 +31,59 @@ width:100%;
 display:flex;
 justify-content:space-between;
 padding:15px 40px;
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.5);
 z-index:1000;
+backdrop-filter:blur(4px);
 }
 
 select{
 padding:8px;
 border-radius:8px;
 border:none;
+cursor:pointer;
 }
 
 section{
 padding:120px 40px;
 text-align:center;
+opacity:0;
+transform:translateY(40px);
+transition:1s;
 }
 
-h1{font-size:46px;margin-bottom:20px;}
-h2{color:#00ffaa;margin-bottom:25px;font-size:30px;}
+section.show{
+opacity:1;
+transform:translateY(0);
+}
+
+h1{
+font-size:50px;
+margin-bottom:20px;
+}
+
+h2{
+color:#ffffff;
+margin-bottom:25px;
+font-size:32px;
+}
 
 .card{
-background:rgba(0,0,0,0.7);
+background:rgba(0,0,0,0.65);
 padding:40px;
 border-radius:20px;
 max-width:1000px;
 margin:25px auto;
 line-height:1.9;
 font-size:17px;
+transition:0.4s;
+}
+
+.card:hover{
+transform:scale(1.03);
 }
 
 footer{
-background:black;
+background:rgba(0,0,0,0.8);
 padding:20px;
 text-align:center;
 }
@@ -68,24 +96,18 @@ text-align:center;
 <select id="languageSelect">
 <option value="tr">Türkçe</option>
 <option value="en">English</option>
-<option value="de">Deutsch</option>
-<option value="ru">Русский</option>
 </select>
 
 <select id="citySelect">
 <option value="">İl Seçiniz</option>
 <option value="sanliurfa">Şanlıurfa</option>
 <option value="diyarbakir">Diyarbakır</option>
-<option value="mardin">Mardin</option>
 <option value="izmir">İzmir</option>
-<option value="aydin">Aydın</option>
-<option value="manisa">Manisa</option>
-<option value="denizli">Denizli</option>
 </select>
 </div>
 
 <section>
-<h1 id="title">Akıllı Pamuk Altı Sensör Mekanizması</h1>
+<h1 id="title"></h1>
 <p id="intro"></p>
 </section>
 
@@ -95,48 +117,45 @@ text-align:center;
 </section>
 
 <section>
-<h2 id="usageTitle"></h2>
-<div class="card" id="usageText"></div>
-</section>
-
-<section>
-<h2 id="workTitle"></h2>
-<div class="card" id="workText"></div>
-</section>
-
-<section>
 <h2 id="regionTitle"></h2>
 <div class="card" id="regionText"></div>
 </section>
 
 <footer>
-© 2026 Teknofest Akıllı Pamuk Projesi - Eymen
+© 2026 Akıllı Pamuk Projesi - Eymen
 </footer>
 
 <script>
+
+document.addEventListener("DOMContentLoaded", function(){
 
 let currentLang="tr";
 
 const translations={
 tr:{
 title:"Akıllı Pamuk Altı Sensör Mekanizması",
-intro:"Bu proje, pamuk üretiminde su tasarrufu sağlamak, verimi artırmak ve sürdürülebilir tarımı desteklemek amacıyla geliştirilmiştir.",
-historyTitle:"Pamuğun Tarihsel Gelişimi",
-historyText:"Pamuk bitkisinin tarihi yaklaşık 7000 yıl öncesine dayanmaktadır. İlk olarak Hindistan ve Güney Amerika’da yetiştirildiği bilinmektedir. Antik medeniyetlerde pamuk, dayanıklı ve nefes alabilen yapısı nedeniyle tekstil üretiminde kullanılmıştır. Sanayi Devrimi ile birlikte pamuk üretimi dünya çapında artmış ve küresel ticaretin temel ürünlerinden biri haline gelmiştir. Günümüzde pamuk, hem ekonomik hem de stratejik açıdan büyük öneme sahiptir.",
-usageTitle:"Pamuk Nerelerde Kullanılır?",
-usageText:"Pamuk en çok tekstil sektöründe kullanılmaktadır. Kıyafetler, çarşaflar, havlular ve birçok günlük ürün pamuktan üretilmektedir. Bunun yanında medikal alanda pamuk, pansuman malzemesi ve hijyen ürünlerinde kullanılır. Ayrıca pamuk yağı gıda sektöründe, pamuk çekirdeği ise hayvan yemi üretiminde değerlendirilir. Bu çok yönlü kullanım alanı pamuğu vazgeçilmez bir tarım ürünü yapmaktadır.",
-workTitle:"Akıllı Sensör Mekanizması Nasıl Çalışır?",
-workText:"Toprak altına yerleştirilen nem sensörleri, toprağın anlık nem oranını sürekli olarak ölçer. Elde edilen veriler dijital bir sisteme aktarılır ve analiz edilir. Nem seviyesi belirlenen kritik eşik değerinin altına düştüğünde sistem otomatik uyarı verir veya sulama mekanizmasını devreye alır. Bu sayede gereksiz su tüketimi önlenir, bitki kökleri sağlıklı gelişir ve maksimum verim elde edilir.",
-regionTitle:"Bölgesel Üretim Analizi",
-defaultRegion:"Lütfen bir il seçerek detaylı üretim bilgilerini görüntüleyiniz.",
+intro:"Pamuk üretiminde su tasarrufu ve verim artışı sağlamak amacıyla geliştirilmiş akıllı tarım sistemidir.",
+historyTitle:"Pamuğun Tarihi ve Önemi",
+historyText:"Pamuk binlerce yıldır kullanılan stratejik bir tarım ürünüdür. Tekstil, sağlık, gıda ve sanayi alanında büyük öneme sahiptir. Türkiye özellikle Güneydoğu Anadolu Bölgesi ile dünya üretiminde önemli bir konumdadır.",
+regionTitle:"Bölgesel Bilgi",
+defaultRegion:"Lütfen bir il seçiniz.",
 cities:{
-sanliurfa:"Şanlıurfa, Türkiye’nin en büyük pamuk üretim merkezidir. GAP projesi sayesinde modern sulama teknikleri uygulanmaktadır.",
-diyarbakir:"Diyarbakır, geniş tarım arazileri ve sıcak iklimi sayesinde pamuk üretimi için oldukça uygundur.",
-mardin:"Mardin’de pamuk üretimi son yıllarda artış göstermiştir ve modern tarım teknolojileri kullanılmaktadır.",
-izmir:"İzmir Ege Bölgesi’nin önemli pamuk üretim merkezlerinden biridir.",
-aydin:"Aydın yüksek kalite lif yapısıyla dikkat çeker.",
-manisa:"Manisa gelişmiş tarım altyapısıyla üretim yapmaktadır.",
-denizli:"Denizli tekstil sanayisi ile bağlantılı güçlü bir üretim bölgesidir."
+sanliurfa:"Şanlıurfa Türkiye’nin en büyük pamuk üretim merkezidir.",
+diyarbakir:"Diyarbakır pamuk üretimine uygun sıcak iklime sahiptir.",
+izmir:"İzmir kaliteli pamuk üretimi ile bilinir."
+}
+},
+en:{
+title:"Smart Cotton Soil Sensor System",
+intro:"An intelligent agricultural system developed to increase productivity and save water in cotton farming.",
+historyTitle:"History and Importance of Cotton",
+historyText:"Cotton has been a strategic agricultural product for thousands of years. It is widely used in textile, medical, food and industrial sectors. Turkey is an important producer globally.",
+regionTitle:"Regional Information",
+defaultRegion:"Please select a city.",
+cities:{
+sanliurfa:"Sanliurfa is the largest cotton production center in Turkey.",
+diyarbakir:"Diyarbakir has a suitable climate for cotton farming.",
+izmir:"Izmir is known for quality cotton production."
 }
 }
 };
@@ -147,10 +166,6 @@ document.getElementById("title").innerText=t.title;
 document.getElementById("intro").innerText=t.intro;
 document.getElementById("historyTitle").innerText=t.historyTitle;
 document.getElementById("historyText").innerText=t.historyText;
-document.getElementById("usageTitle").innerText=t.usageTitle;
-document.getElementById("usageText").innerText=t.usageText;
-document.getElementById("workTitle").innerText=t.workTitle;
-document.getElementById("workText").innerText=t.workText;
 document.getElementById("regionTitle").innerText=t.regionTitle;
 updateCity();
 }
@@ -174,19 +189,19 @@ document.getElementById("citySelect").addEventListener("change",updateCity);
 
 updateLanguage();
 
-</script>
+const sections=document.querySelectorAll("section");
 
-</body>
-</html>
-<script>
-const sections = document.querySelectorAll("section");
-
-window.addEventListener("scroll", ()=>{
+window.addEventListener("scroll",()=>{
 sections.forEach(sec=>{
-const top = sec.getBoundingClientRect().top;
+const top=sec.getBoundingClientRect().top;
 if(top < window.innerHeight - 100){
 sec.classList.add("show");
 }
 });
 });
+
+});
 </script>
+
+</body>
+</html>
