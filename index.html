@@ -18,7 +18,7 @@ font-family:'Poppins', sans-serif;
 body{
 color:white;
 background:
-linear-gradient(rgba(0,80,0,0.75), rgba(0,60,0,0.85)),
+linear-gradient(rgba(0,40,20,0.65), rgba(0,30,15,0.75)),
 url("https://images.unsplash.com/photo-1598511721343-3a5f1b87b84d?auto=format&fit=crop&w=1600&q=80");
 background-size:cover;
 background-position:center;
@@ -31,18 +31,18 @@ text-align:center;
 }
 
 h1{
-font-size:55px;
+font-size:50px;
 margin-bottom:20px;
 }
 
 h2{
-color:#00ff88;
+color:#00ffaa;
 margin-bottom:30px;
-font-size:40px;
+font-size:35px;
 }
 
 .card{
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.65);
 padding:40px;
 border-radius:20px;
 max-width:900px;
@@ -90,42 +90,40 @@ text-align:center;
 
 <section>
 <h1>Akıllı Pamuk Altı Sensör Mekanizması</h1>
-<p>Pamuk bitkisinin kök bölgesine yerleştirilen sensör sistemi sayesinde toprak nemi, sıcaklık ve verim riski analiz edilir.</p>
+<p>Pamuk kök bölgesine yerleştirilen sensör sistemi ile toprak nemi sürekli analiz edilir ve verim kaybı önlenir.</p>
 </section>
 
 <section>
-<h2>Mekanizmamız Nasıl Çalışır?</h2>
+<h2>Mekanizma Nasıl Çalışır?</h2>
 <div class="card">
-Bu sistem pamuk bitkisinin altına yerleştirilen nem sensörleri ile çalışır. 
-Topraktaki nem oranı sürekli ölçülür. 
-Nem seviyesi kritik değerin altına düştüğünde çiftçi erken müdahale edebilir. 
-Bu sayede:
+Sensörler pamuk bitkisinin altına yerleştirilir. 
+Topraktaki nem seviyesi düzenli olarak ölçülür. 
+Nem kritik seviyenin altına düştüğünde erken müdahale sağlanır.
 <br><br>
-✔ Su tasarrufu sağlanır  
-✔ Gereksiz sulama önlenir  
-✔ Verim kaybı azaltılır  
-✔ Üretim kalitesi artar  
+✔ Su tasarrufu sağlar  
+✔ Ürün verimini artırır  
+✔ Akıllı tarımı destekler  
 </div>
 </section>
 
 <section>
 <h2>İl Seçimi</h2>
 
-<p>Pamuk üretimi yapılan bir il seçin:</p>
+<p>Pamuk üretim bölgesini seçiniz:</p>
 
-<select onchange="ilBilgi(this.value)">
+<select id="ilSecim">
 <option value="">İl Seçiniz</option>
-<option value="Sanliurfa">Şanlıurfa</option>
-<option value="Diyarbakir">Diyarbakır</option>
-<option value="Mardin">Mardin</option>
-<option value="Izmir">İzmir</option>
-<option value="Aydin">Aydın</option>
-<option value="Manisa">Manisa</option>
-<option value="Denizli">Denizli</option>
+<option value="sanliurfa">Şanlıurfa</option>
+<option value="diyarbakir">Diyarbakır</option>
+<option value="mardin">Mardin</option>
+<option value="izmir">İzmir</option>
+<option value="aydin">Aydın</option>
+<option value="manisa">Manisa</option>
+<option value="denizli">Denizli</option>
 </select>
 
 <div class="card" id="ilAciklama">
-Seçilen ile göre pamuk üretim bilgileri burada gösterilecektir.
+Seçilen ile ait bilgiler burada gösterilecektir.
 </div>
 
 </section>
@@ -157,30 +155,50 @@ Seçilen ile göre pamuk üretim bilgileri burada gösterilecektir.
 </footer>
 
 <script>
-function ilBilgi(il){
+const select = document.getElementById("ilSecim");
+const aciklama = document.getElementById("ilAciklama");
+
+select.addEventListener("change", function() {
 
 let bilgi = "";
 
-if(il=="Sanliurfa"){
-bilgi="Şanlıurfa Türkiye'nin en büyük pamuk üretim merkezlerinden biridir. GAP projesi sayesinde sulama imkanları gelişmiştir.";
+switch(this.value){
+case "sanliurfa":
+bilgi = "Şanlıurfa Türkiye'nin en büyük pamuk üretim merkezidir. GAP sulama sistemi sayesinde yüksek verim elde edilir.";
+break;
+
+case "diyarbakir":
+bilgi = "Diyarbakır sıcak iklimi ve verimli toprakları ile pamuk üretimi için uygundur.";
+break;
+
+case "mardin":
+bilgi = "Mardin'de modern sulama teknikleri ile pamuk üretimi her yıl artmaktadır.";
+break;
+
+case "izmir":
+bilgi = "İzmir Ege Bölgesi'nde kaliteli pamuk lif üretimi ile bilinir.";
+break;
+
+case "aydin":
+bilgi = "Aydın yüksek verimli ve teknolojik pamuk üretimi ile öne çıkar.";
+break;
+
+case "manisa":
+bilgi = "Manisa'da gelişmiş tarım teknikleri ile pamuk üretimi yapılmaktadır.";
+break;
+
+case "denizli":
+bilgi = "Denizli tekstil sanayisi ile bağlantılı olarak pamuk üretiminde önemlidir.";
+break;
+
+default:
+bilgi = "Seçilen ile ait bilgiler burada gösterilecektir.";
 }
-else if(il=="Diyarbakir"){
-bilgi="Diyarbakır sıcak iklimi sayesinde pamuk üretimine uygundur. Verimli toprak yapısına sahiptir.";
-}
-else if(il=="Mardin"){
-bilgi="Mardin'de pamuk üretimi son yıllarda artış göstermiştir. Modern sulama teknikleri kullanılmaktadır.";
-}
-else if(il=="Izmir"){
-bilgi="İzmir Ege Bölgesi'nin önemli pamuk üretim merkezlerinden biridir. Kaliteli lif üretimi yapılır.";
-}
-else if(il=="Aydin"){
-bilgi="Aydın yüksek verimli pamuk üretimi ile bilinir. Tarımsal teknoloji kullanımı yaygındır.";
-}
-else if(il=="Manisa"){
-bilgi="Manisa'da pamuk üretimi gelişmiş tarım teknikleri ile desteklenmektedir.";
-}
-else if(il=="Denizli"){
-bilgi="Denizli tekstil sanayisi ile bağlantılı olarak pamuk üretiminde önemli bir yere sahiptir.";
-}
-else{
-bilgi="Seçilen ile göre pamuk üretim bilgiler
+
+aciklama.innerHTML = bilgi;
+
+});
+</script>
+
+</body>
+</html>
