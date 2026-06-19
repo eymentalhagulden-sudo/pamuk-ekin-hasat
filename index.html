@@ -3,64 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYAP: Quantum-Tech Launch Facility</title>
+    <title>AYAP: Next-Gen Launch Control Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { 
             width: 100%; height: 100%; overflow: hidden; 
-            background-color: #010206; font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0a0f1d; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             user-select: none;
         }
 
-        /* NEXT-GEN GLOWING HUD */
+        /* PREMIUM OYUN ARAYÜZÜ (CINEMATIC HUD) */
         #hud-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 500;
         }
 
-        .quantum-panel {
+        .hq-panel {
             position: absolute; top: 30px; left: 30px;
-            background: rgba(2, 4, 15, 0.85);
-            border: 1px solid #00f3ff;
-            border-left: 5px solid #00ff66;
-            padding: 20px; width: 390px; border-radius: 8px;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 243, 255, 0.1);
-            backdrop-filter: blur(15px);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.85) 100%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-left: 5px solid #38bdf8;
+            padding: 22px; width: 400px; border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
         }
 
         .panel-header {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 8px; margin-bottom: 12px;
         }
 
-        .stage-title { color: #00f3ff; font-weight: 900; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px #00f3ff; }
-        .instruction-text { color: #cbd5e1; font-size: 13px; line-height: 1.6; font-family: monospace; }
+        .stage-title { color: #38bdf8; font-weight: 800; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+        .instruction-text { color: #cbd5e1; font-size: 13.5px; line-height: 1.6; }
 
         .system-matrix {
             position: absolute; top: 30px; right: 30px;
-            background: rgba(2, 4, 15, 0.85); border: 1px solid rgba(255, 0, 85, 0.4);
-            padding: 15px; width: 260px; color: #ff0055; font-size: 11px; font-family: monospace;
-            border-radius: 8px; box-shadow: 0 0 25px rgba(255, 0, 85, 0.15);
-            backdrop-filter: blur(15px);
+            background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px; width: 260px; color: #38bdf8; font-size: 11px; font-family: monospace;
+            border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
         .matrix-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .matrix-val { color: #fff; font-weight: bold; text-shadow: 0 0 5px #fff; }
+        .matrix-val { color: #f8fafc; font-weight: bold; }
 
         #crosshair {
-            position: absolute; top: 50%; left: 50%; width: 16px; height: 16px;
+            position: absolute; top: 50%; left: 50%; width: 14px; height: 14px;
             transform: translate(-50%, -50%); pointer-events: none; z-index: 99;
         }
-        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #00ff66; box-shadow: 0 0 8px #00ff66; }
-        #crosshair::before { top: 7px; left: 0; width: 16px; height: 2px; }
-        #crosshair::after { top: 0; left: 7px; width: 2px; height: 16px; }
+        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: rgba(56, 189, 248, 0.8); }
+        #crosshair::before { top: 6px; left: 0; width: 14px; height: 2px; }
+        #crosshair::after { top: 0; left: 6px; width: 2px; height: 14px; }
 
         #bottom-bar {
             position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%);
-            background: rgba(2, 4, 15, 0.9); color: #00f3ff; padding: 12px 35px;
-            border-radius: 20px; font-size: 11px; font-weight: bold; border: 1px solid #00f3ff;
-            text-align: center; box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-            letter-spacing: 1px; font-family: monospace;
+            background: #1e293b; color: #f1f5f9; padding: 12px 35px;
+            border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -70,198 +69,205 @@
     <div id="hud-container">
         <div id="crosshair"></div>
         
-        <div class="quantum-panel">
+        <div class="hq-panel">
             <div class="panel-header">
-                <div class="stage-title" id="hud-stage">KANTUM MATRİSİ: AKTİF</div>
+                <div class="stage-title" id="hud-stage">FLIGHT DECK: AKTİF</div>
             </div>
             <div class="instruction-text" id="hud-desc">
-                [SİSTEM]: Yüksek radyasyonlu plazma hangarına giriş yapıldı. W,A,S,D ile ışık yansıyan zeminde ilerleyin. Parlayan vizörü olan Görev Şefi'ne yaklaşın ve [E] tuşuna basın.
+                Görüş açısı optimize edildi. W,A,S,D ile endüstriyel fırlatma sahasında yürüyün. Tam karşıda sizi bekleyen Komutan ile iletişime geçmek için [E] tuşuna basın.
             </div>
         </div>
 
         <div class="system-matrix">
-            <div class="matrix-row"><span>TELEMETRİ DÖNGÜSÜ:</span><span class="matrix-val" id="val-pos">X:0 Z:15</span></div>
-            <div class="matrix-row"><span>KUANTUM ÇEKİRDEK:</span><span class="matrix-val" id="val-pressure">0.00 eV</span></div>
-            <div class="matrix-row"><span>HİBRİT PLAZMA YAKIT:</span><span class="matrix-val" id="val-fuel">%100.00</span></div>
+            <div class="matrix-row"><span>TELEMETRİ MAP:</span><span class="matrix-val" id="val-pos">X:0 Z:12</span></div>
+            <div class="matrix-row"><span>HİBRİT REAKTÖR:</span><span class="matrix-val" id="val-pressure">0.0 bar</span></div>
+            <div class="matrix-row"><span>YAKIT REZERVİ:</span><span class="matrix-val" id="val-fuel">%100.00</span></div>
         </div>
 
         <div id="bottom-bar">
-            [KONTROLLER] W, A, S, D: Navigasyon | Fare Sürükle: Optik Bakış | E: Kuantum Bağlantı
+            [HAREKET] W, A, S, D ile Yürü | Fare ile Tıklayıp Sürükleyerek Bak | [E] Etkileşim
         </div>
     </div>
 
     <script>
-        // --- GERÇEKÇİ YAPAY ZEKA SES MOTORU ---
+        // --- SESLİ YAPAY ZEKA GÖREVLİSİ ---
         function sesliKonus(metin) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const u = new SpeechSynthesisUtterance(metin);
-                u.lang = 'tr-TR'; u.rate = 1.0; u.pitch = 0.95;
+                u.lang = 'tr-TR'; u.rate = 1.0; u.pitch = 0.9;
                 window.speechSynthesis.speak(u);
             }
         }
 
-        // --- SAHNE VE PARLAK POST-PROCESS AYARLARI ---
+        // --- STÜDYO KALİTESİNDE RENDERER VE SAHNE KURULUMU ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x010206);
-        scene.fog = new THREE.FogExp2(0x010206, 0.03); // Atmosferik neon sisi
+        scene.background = new THREE.Color(0x0a1120); // Derin endüstriyel gece mavisi tonu
+        scene.fog = new THREE.FogExp2(0x0a1120, 0.015); // Gerçekçi stüdyo pusu
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping; // Parlaklığı patlatan sinematik tonlama
-        renderer.toneMappingExposure = 1.5; // Parlaklık çarpanını artırdık!
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Yumuşak, titremeyen gölgeler
+        renderer.toneMapping = THREE.ACESFilmicToneMapping; // Sinematik renk eşleme
+        renderer.toneMappingExposure = 1.1; // Gözü yormayan net parlaklık derecesi
         document.body.appendChild(renderer.domElement);
 
         const clock = new THREE.Clock();
 
-        // Üst Düzey Işıklandırma (Neon Küreler ve Yansıma Projektörleri)
-        const ambientLight = new THREE.AmbientLight(0x0a1128, 0.5);
+        // --- NET GÖRÜŞ SAĞLAYAN GERÇEKÇİ IŞIKLANDIRMA MOTORU ---
+        // Sahneyi homojen aydınlatan genel stüdyo ışığı (Kör noktaları yok eder)
+        const ambientLight = new THREE.AmbientLight(0x1e293b, 1.2);
         scene.add(ambientLight);
 
-        // Zeminde ultra yansıma sağlaması için güçlü beyaz tepe ışığı
-        const topLight = new THREE.DirectionalLight(0xffffff, 2.0);
-        topLight.position.set(0, 30, 0);
-        topLight.castShadow = true;
-        topLight.shadow.mapSize.width = 2048;
-        topLight.shadow.mapSize.height = 2048;
-        scene.add(topLight);
+        // Güçlü dikey projektör (Endüstriyel tavan aydınlatması gibi tepeden dik gölgeler üretir)
+        const roofLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        roofLight.position.set(10, 40, 10);
+        roofLight.castShadow = true;
+        roofLight.shadow.mapSize.width = 2048;
+        roofLight.shadow.mapSize.height = 2048;
+        roofLight.shadow.bias = -0.0002;
+        scene.add(roofLight);
 
-        // Kuantum Lazer Koridor Işıkları
-        createGlowLine(0, 14, -5, 0x00f3ff, 4.0); // Turkuaz Parıltı
-        createGlowLine(24, 14, -20, 0xff0055, 4.0); // Kırmızı Roket Parıltısı
-        createGlowLine(-20, 14, -20, 0x00ff66, 3.0); // Yeşil Laboratuvar Parıltısı
+        // Operasyon Alanı Floresanları (Gerçek zamanlı derinlik katar)
+        createIndustrialLight(0, 15, -5, 0x38bdf8, 2.0);  // Komuta Bölgesi Mavisi
+        createIndustrialLight(25, 18, -22, 0xf43f5e, 2.0); // Roket Bölgesi Kırmızısı
 
-        function createGlowLine(x, y, z, color, intensity) {
-            const pLight = new THREE.PointLight(color, intensity, 40);
-            pLight.position.set(x, y, z);
-            scene.add(pLight);
+        function createIndustrialLight(x, y, z, color, intensity) {
+            const light = new THREE.PointLight(color, intensity, 35);
+            light.position.set(x, y, z);
+            scene.add(light);
+
+            // Armatür Kasası
+            const geo = new THREE.BoxGeometry(3, 0.2, 0.4);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
+            const emitMat = new THREE.MeshBasicMaterial({ color: color });
             
-            // Parlayan Neon Çubuk (Glow Material)
-            const geo = new THREE.CylinderGeometry(0.15, 0.15, 6, 16);
-            const mat = new THREE.MeshBasicMaterial({ color: color }); // Basic material ışıklardan etkilenmez, hep parlar!
-            const mesh = new THREE.Mesh(geo, mat);
-            mesh.rotation.x = Math.PI / 2;
-            mesh.position.set(x, y, z);
-            scene.add(mesh);
+            const box = new THREE.Mesh(geo, mat);
+            const line = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.05, 0.3), emitMat);
+            line.position.y = -0.1;
+            box.add(line);
+            box.position.set(x, y, z);
+            scene.add(box);
         }
 
-        // --- AYNA GİBİ YANSIYAN ULTRA TEKNOLOJİK HANGAR ---
-        const facility = new THREE.Group();
+        // --- GELİŞMİŞ MODELLER & ENDÜSTRİYEL COĞRAFYA ---
+        const complexHangar = new THREE.Group();
 
-        // Pürüzsüz Krom Zemin (Işıkları mükemmel yansıtır)
-        const floorGeo = new THREE.PlaneGeometry(160, 160);
+        // Gerçekçi Panel Kaplamalı Çelik Zemin
+        const floorGeo = new THREE.PlaneGeometry(160, 160, 20, 20);
         const floorMat = new THREE.MeshStandardMaterial({ 
-            color: 0x050b14, 
-            roughness: 0.05, // 0'a yakın olması pürüzsüz yansıma sağlar (Ayna efekti)
-            metalness: 0.95  // Tamamen metalik yüzey
+            color: 0x0f172a, roughness: 0.2, metalness: 0.85 
         });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
-        facility.add(floor);
+        complexHangar.add(floor);
 
-        // Duvarlardaki Parlayan Lazer Devre Hatları (Grid Circuit Lines)
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0x02040a, roughness: 0.4, metalness: 0.9 });
-        const backWall = new THREE.Mesh(new THREE.PlaneGeometry(160, 40), wallMat);
-        backWall.position.set(0, 20, -55);
-        facility.add(backWall);
+        // Zemin Güvenlik Çizgileri ve Yönlendirmeler (Sarı Endüstriyel Şeritler)
+        const stripeMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.5 });
+        const lineStrip = new THREE.Mesh(new THREE.PlaneGeometry(160, 0.2), stripeMat);
+        lineStrip.rotation.x = -Math.PI / 2;
+        lineStrip.position.set(0, 0.01, -2); // Komutana giden emniyet hattı
+        complexHangar.add(lineStrip);
 
-        // Arka duvara devasa parlayan şerit ekleme
-        const laserStripe = new THREE.Mesh(new THREE.BoxGeometry(160, 0.3, 0.1), new THREE.MeshBasicMaterial({ color: 0x00f3ff }));
-        laserStripe.position.set(0, 8, -54.9);
-        facility.add(laserStripe);
+        // Çelik Duvar Panelleri
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x020617, roughness: 0.5, metalness: 0.8 });
+        const backWall = new THREE.Mesh(new THREE.PlaneGeometry(160, 45), wallMat);
+        backWall.position.set(0, 22.5, -55);
+        backWall.receiveShadow = true;
+        complexHangar.add(backWall);
 
-        // Geometrik Kuantum Sütunlar
-        const pillarMat = new THREE.MeshStandardMaterial({ color: 0x0a1128, metalness: 0.9, roughness: 0.1 });
-        for(let i = -40; i <= 40; i += 20) {
-            const pillar = new THREE.Group();
-            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 40, 8), pillarMat);
-            body.castShadow = true;
-            pillar.add(body);
-
-            // Sütunların üzerine dikey parlayan şeritler
-            const glowStrip = new THREE.Mesh(new THREE.BoxGeometry(0.1, 40, 0.5), new THREE.MeshBasicMaterial({ color: 0x00ff66 }));
-            glowStrip.position.z = 0.5;
-            pillar.add(glowStrip);
-
-            pillar.position.set(-40, 20, i);
-            facility.add(pillar);
+        // Rigging/Kafes Kirişleri (Truss Architecture)
+        const trussMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.3 });
+        for(let i = -45; i <= 45; i += 15) {
+            const pillar = new THREE.Mesh(new THREE.BoxGeometry(1.2, 45, 1.2), trussMat);
+            pillar.position.set(-50, 22.5, i);
+            pillar.castShadow = true;
+            complexHangar.add(pillar);
         }
 
-        scene.add(facility);
+        // --- RAMPADAKİ DEVASA FIRLATMA KULESİ (LAUNCH INFRASTRUCTURE) ---
+        const launchTower = new THREE.Group();
+        for (let h = 0; h < 5; h++) {
+            const platform = new THREE.Mesh(new THREE.BoxGeometry(6, 0.3, 6), trussMat);
+            platform.position.y = h * 5;
+            launchTower.add(platform);
+            
+            // Kule dikmeleri
+            const post = new THREE.Mesh(new THREE.BoxGeometry(0.3, 5, 0.3), trussMat);
+            post.position.set(-2.8, (h * 5) + 2.5, -2.8);
+            launchTower.add(post);
+        }
+        launchTower.position.set(31, 0, -22);
+        complexHangar.add(launchTower);
 
-        // --- SİBERPUNK GÖREV ŞEFİ (KOMUTAN) ---
+        scene.add(complexHangar);
+
+        // --- YÜKSEK KALİTE ASKERİ SİMÜLASYON KOMUTANI ---
         const commander = new THREE.Group();
-        const techArmor = new THREE.MeshStandardMaterial({ color: 0x090d16, metalness: 0.9, roughness: 0.1 });
-        const neonBlue = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
+        const fabricMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.7 }); // Taktik Üniforma
+        const steelArmor = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7, roughness: 0.3 }); // Balistik Koruma
 
-        // Kafa ve Parlayan Siber Vizör (Kask)
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 32), new THREE.MeshStandardMaterial({ color: 0xffdbac }));
-        head.position.y = 1.75;
-        const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.34, 32, 32), techArmor);
-        helmet.position.y = 1.76;
-        
-        // Daft Punk tarzı parlayan vizör camı
-        const visor = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.12, 0.2), neonBlue);
-        visor.position.set(0, 1.8, 0.22);
-        commander.add(head, helmet, visor);
+        // Kafa, Kask ve Cam Vizör
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 32), new THREE.MeshStandardMaterial({ color: 0xffdbac })); head.position.y = 1.75;
+        const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.33, 32, 16, 0, Math.PI*2, 0, Math.PI/2), steelArmor); helmet.position.y = 1.77;
+        const commVisor = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.2), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+        commVisor.position.set(0, 1.78, 0.22);
+        commander.add(head, helmet, commVisor);
 
-        // Kuantum Zırh Gövdesi
-        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.24, 1.0, 16), techArmor);
-        torso.position.y = 1.1;
-        
-        // Omuzlardaki parlayan güç modülleri
-        const padL = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), neonBlue); padL.position.set(-0.42, 1.45, 0);
-        const padR = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), neonBlue); padR.position.set(0.42, 1.45, 0);
-        commander.add(torso, padL, padR);
+        // Detaylandırılmış Gövde & Taktik Cepler
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 1.0, 16), fabricMat); torso.position.y = 1.1; torso.castShadow = true;
+        const armorVest = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.32, 0.65, 16), steelArmor); armorVest.position.y = 1.15;
+        commander.add(torso, armorVest);
 
-        // Bacaklar
-        const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.09, 0.6, 16), techArmor); legL.position.set(-0.14, 0.3, 0);
-        const legR = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.09, 0.6, 16), techArmor); legR.position.set(0.14, 0.3, 0);
+        // Bacaklar ve Botlar
+        const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.6, 16), fabricMat); legL.position.set(-0.13, 0.3, 0);
+        const legR = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.6, 16), fabricMat); legR.position.set(0.13, 0.3, 0);
         commander.add(legL, legR);
 
         commander.position.set(0, 0, -4);
         scene.add(commander);
 
-        // --- SON TEKNOLOJİ PARLAYAN AYAP ROKETİ ---
+        // --- ASKERİ KROM AYAP-M1 ROKETİ ---
         const rocket = new THREE.Group();
-        const hyperChrome = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1.0, roughness: 0.02 }); // Ultra parlak metal
-        const neonRed = new THREE.MeshBasicMaterial({ color: 0xff0055 });
+        const silverHull = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9, roughness: 0.15 }); // Işığı yansıtan net metal kaplama
+        const noseMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.4 });
 
-        // Gövde ve Burun
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 17, 32), hyperChrome); body.position.y = 8.5;
-        body.castShadow = true; body.receiveShadow = true;
-        const nose = new THREE.Mesh(new THREE.ConeGeometry(1.6, 4.5, 32), techArmor); nose.position.y = 19.25;
-        rocket.add(body, nose);
+        // Ana Yapı Kademeleri
+        const mainStage = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 17, 32), silverHull); mainStage.position.y = 8.5;
+        mainStage.castShadow = true; mainStage.receiveShadow = true;
+        const fairingCone = new THREE.Mesh(new THREE.ConeGeometry(1.5, 4.2, 32), noseMat); fairingCone.position.y = 19.1;
+        rocket.add(mainStage, fairingCone);
 
-        // Roket gövdesi üzerine parlayan dikey çizgiler (Lazer hatları)
-        const line1 = new THREE.Mesh(new THREE.BoxGeometry(0.05, 12, 1.62), neonRed); line1.position.set(0, 8, 0);
-        rocket.add(line1);
+        // Aerodinamik Kanatlar
+        const wingMat = new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.5 });
+        for(let i=0; i<4; i++) {
+            const wing = new THREE.Mesh(new THREE.BoxGeometry(0.15, 4.5, 2.5), wingMat);
+            wing.position.set(0, 2.25, 1.5);
+            const pivot = new THREE.Group(); pivot.rotation.y = (Math.PI / 2) * i;
+            pivot.add(wing); rocket.add(pivot);
+        }
 
-        // İtki Ağzı ve Plazma Enerjisi
-        const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.5, 1.5, 16), techArmor); nozzle.position.y = -0.75;
-        rocket.add(nozzle);
+        // Motor Çıkışı ve İtki Alevi
+        const exhaustRing = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.4, 1.2, 16), noseMat); exhaustRing.position.y = -0.6;
+        rocket.add(exhaustRing);
 
-        const plasmaFire = new THREE.Mesh(
-            new THREE.ConeGeometry(1.4, 9, 24), 
-            new THREE.MeshBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.0 }) // Ateş mavi/turkuaz plazma enerjisi!
-        );
-        plasmaFire.position.y = -5; plasmaFire.rotation.x = Math.PI;
-        rocket.add(plasmaFire);
+        const thrustFire = new THREE.Mesh(new THREE.ConeGeometry(1.3, 8, 16), new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.0 }));
+        thrustFire.position.y = -4.5; thrustFire.rotation.x = Math.PI;
+        rocket.add(thrustFire);
 
         rocket.position.set(25, 0, -22);
         scene.add(rocket);
 
-        // --- KONTROLLER VE FPS MOTORU ---
+        // --- FPS DİNAMİK HAREKET SİSTEMİ ---
         let player = { x: 0, z: 12, rotY: 0, rotX: 0, inRocket: false };
         camera.position.set(player.x, 1.75, player.z);
 
         const keys = {};
-        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; runQuantumStage(e.key); });
+        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; nextMissionStage(e.key); });
         window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
         let isMouseDown = false;
@@ -274,78 +280,78 @@
             player.rotX = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.rotX));
         });
 
-        // --- GÖREV KONTROL MATRIXI ---
-        let stage = 1;
+        // --- GÖREV SEKTÖRLERİ AKIŞI ---
+        let missionStep = 1;
 
-        function runQuantumStage(key) {
+        function nextMissionStage(key) {
             if (key.toLowerCase() === 'e') {
                 const currentPos = new THREE.Vector3(player.x, 0, player.z);
                 
-                // 1. Komutan Aşaması
-                if (currentPos.distanceTo(new THREE.Vector3(0, 0, -4)) < 3.5 && stage === 1) {
-                    stage = 2;
-                    document.getElementById('hud-stage').innerText = "BAĞLANTI: ENJEKSİYON SEKTÖRÜ";
-                    const msg = "Kuantum brifingi başlatıldı. AYAP taktik aracının ana matris çekirdeği şarj edildi. Sağ sektördeki parlayan krom fırlatma şaftına girin ve kokpit senkronizasyonu için yeniden E tuşuna basın.";
-                    document.getElementById('hud-desc').innerText = "[GÖREV ŞEFİ]: " + msg;
-                    sesliKonus(msg);
+                // 1. Komutan Diyaloğu
+                if (currentPos.distanceTo(new THREE.Vector3(0, 0, -4)) < 3.5 && missionStep === 1) {
+                    missionStep = 2;
+                    document.getElementById('hud-stage').innerText = "GÖREV AŞAMASI: KULEYE GEÇİŞ";
+                    const lines = "Rapor alındı askeri operasyon şefi. AYAP fırlatma aracının sistem entegrasyonu başarıyla tamamlandı. Şimdi sağ tarafta yükselen fırlatma kulesinin köprüsüne doğru ilerleyin ve komuta kokpitine biniş yapmak için tekrar E tuşuna basın.";
+                    document.getElementById('hud-desc').innerText = "Komutan: " + lines;
+                    sesliKonus(lines);
                     return;
                 }
 
-                // 2. Rokete Giriş Aşaması
-                if (currentPos.distanceTo(new THREE.Vector3(25, 0, -22)) < 7 && stage === 2) {
+                // 2. Rokete Giriş
+                if (currentPos.distanceTo(new THREE.Vector3(25, 0, -22)) < 7 && missionStep === 2) {
                     player.inRocket = true;
-                    stage = 3;
-                    document.getElementById('hud-stage').innerText = "GERİ SAYIM: KRİTİK REAKSİYON";
-                    const msg = "Plazma kokpitine bağlanıldı. İtki sürücüleri maksimum şarj durumunda. Reaktörü tetiklemek ve dikey kuantum sıçramasını başlatmak için son kez E tuşuna basın!";
-                    document.getElementById('hud-desc').innerText = "[KAPSÜL BİLGİSAYARI]: " + msg;
-                    sesliKonus(msg);
+                    missionStep = 3;
+                    document.getElementById('hud-stage').innerText = "SİSTEM DURUMU: ATEŞLEME EŞİĞİ";
+                    const lines = "Ana kapsül kilitlendi. Yakıt basınç optimizasyonu tamam. Tüm motorları tam itme modunda ateşlemek ve kalkışı gerçekleştirmek için son kez E tuşuna basın.";
+                    document.getElementById('hud-desc').innerText = "Mekanik Kokpit: " + lines;
+                    sesliKonus(lines);
                     return;
                 }
 
-                // 3. Ateşleme Aşaması
-                if (player.inRocket && stage === 3) {
-                    stage = 4;
-                    plasmaFire.material.opacity = 1.0;
-                    document.getElementById('hud-stage').innerText = "DURUM: YÖRÜNGE DIŞI SÜRÜŞ 🌌";
-                    const msg = "Kuantum motorları ateşlendi! Işık hızına yakın ivmelenmeyle fırlatma üssünden ayrılıyoruz. Sistem kararlı, yolculuk başladı!";
-                    document.getElementById('hud-desc').innerText = "[UÇUŞ BİLGİSAYARI]: " + msg;
-                    sesliKonus(msg);
+                // 3. Fırlatma Gerçekleşmesi
+                if (player.inRocket && missionStep === 3) {
+                    missionStep = 4;
+                    thrustFire.material.opacity = 1.0;
+                    document.getElementById('hud-stage').innerText = "DURUM: GÖREV BAŞARIYLA İCRA EDİLİYOR 🚀";
+                    const lines = "Ateşleme sekansı sorunsuz tamamlandı! Roket fırlatma rampasından güvenle dikey ayrılıyor. Atmosferik yükseliş kararlı!";
+                    document.getElementById('hud-desc').innerText = "Uçuş Sistemi: " + lines;
+                    sesliKonus(lines);
                 }
             }
         }
 
-        // --- ANIMATION LOOP ---
+        // --- OYUN DÖNGÜSÜ (CORE LOOP) ---
         function animate() {
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
 
             if (!player.inRocket) {
-                // Akıcı FPS Navigasyonu
+                // FPS Yumuşak Yürüme Kontrolleri
                 const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
                 const side = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
-                const currentSpeed = 6.0 * delta;
+                const speedMultiplier = 6.0 * delta;
 
-                if (keys['w']) { player.x += forward.x * currentSpeed; player.z += forward.z * currentSpeed; }
-                if (keys['s']) { player.x -= forward.x * currentSpeed; player.z -= forward.z * currentSpeed; }
-                if (keys['a']) { player.x -= side.x * currentSpeed; player.z -= side.z * currentSpeed; }
-                if (keys['d']) { player.x += side.x * currentSpeed; player.z += side.z * currentSpeed; }
+                if (keys['w']) { player.x += forward.x * speedMultiplier; player.z += forward.z * speedMultiplier; }
+                if (keys['s']) { player.x -= forward.x * speedMultiplier; player.z -= forward.z * speedMultiplier; }
+                if (keys['a']) { player.x -= side.x * speedMultiplier; player.z -= side.z * speedMultiplier; }
+                if (keys['d']) { player.x += side.x * speedMultiplier; player.z += side.z * speedMultiplier; }
 
                 camera.position.set(player.x, 1.75, player.z);
                 camera.rotation.set(0, 0, 0); camera.rotation.y = player.rotY; camera.rotation.x = player.rotX;
 
-                // Komutan gözlerini oyuncudan ayırmasın
+                // Komutanın oyuncuyu takip etmesi
                 commander.lookAt(player.x, commander.position.y, player.z);
                 document.getElementById('val-pos').innerText = `X:${player.x.toFixed(0)} Z:${player.z.toFixed(0)}`;
             } else {
-                // Sinematik Geniş Takip Açısı
-                camera.position.set(rocket.position.x, rocket.position.y + 5, rocket.position.z + 24);
+                // Sinematik Kamera Açısı
+                camera.position.set(rocket.position.x, rocket.position.y + 6, rocket.position.z + 25);
                 camera.lookAt(rocket.position);
 
-                if (stage === 4) {
-                    rocket.position.y += 15 * delta; // Kuantum roket daha hızlı yükselir!
-                    plasmaFire.scale.set(Math.random() * 0.2 + 0.9, Math.random() * 0.4 + 0.8, Math.random() * 0.2 + 0.9);
+                if (missionStep === 4) {
+                    rocket.position.y += 13 * delta; // Kalkış hızı
+                    thrustFire.scale.set(1, Math.random() * 0.4 + 0.8, 1);
                     
-                    document.getElementById('val-pressure').innerText = `${(750 + Math.random()*50).toFixed(2)} eV`;
+                    document.getElementById('val-pressure').innerText = `${(380 + Math.random()*12).toFixed(1)} bar`;
                     document.getElementById('val-fuel').innerText = `${Math.max(0, 100 - rocket.position.y * 0.3).toFixed(2)} %`;
                 }
             }
@@ -358,7 +364,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        animate();
+        init3D = animate(); // Döngüyü ateşle
     </script>
 </body>
 </html>
