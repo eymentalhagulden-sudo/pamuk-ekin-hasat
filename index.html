@@ -3,276 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYAP Uzay Görevi Komuta Merkezi</title>
+    <title>AYAP 3D: Ay Üssü ve Roket Simülasyonu</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #020208;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: monospace; }
         
-        /* SOL TARAF: SİZİN GÖRSELDEKİ 10 AŞAMALI PANEL */
-        #mission-control {
-            width: 30%;
-            background: rgba(10, 15, 35, 0.95);
-            border-right: 3px solid #00f3ff;
-            display: flex;
-            flex-direction: column;
+        /* MODERN VE KÜÇÜK SİNEMATİK HUD */
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(2, 6, 23, 0.85);
+            border: 1px solid #00f3ff;
             padding: 15px;
-            overflow-y: auto;
-            box-shadow: 5px 0 25px rgba(0, 243, 255, 0.15);
-        }
-        
-        .panel-header {
-            color: #00f3ff;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #00f3ff;
-        }
-
-        .step-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid #1e293b;
-            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
+            color: #fff;
+            width: 320px;
+            z-index: 100;
+            pointer-events: none;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
         }
-        .step-card:hover {
-            border-color: #00f3ff;
-            background: rgba(0, 243, 255, 0.05);
-        }
-        .step-card.active {
-            border-color: #ff0055;
-            background: rgba(255, 0, 85, 0.1);
-        }
-        .step-num {
-            font-size: 11px;
-            font-weight: bold;
-            color: #ff0055;
-            text-transform: uppercase;
-        }
-        .step-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #00f3ff;
-            margin: 2px 0;
-        }
-        .step-desc {
-            font-size: 12px;
-            color: #94a3b8;
+        .hud-title { color: #ff0055; font-weight: bold; margin-bottom: 5px; font-size: 14px; text-transform: uppercase; }
+        .hud-text { color: #cbd5e1; font-size: 12px; line-height: 1.4; }
+
+        /* MERKEZİ HEDEF GÖSTERGESİ (FPS OYUNLARI GİBİ) */
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(0, 253, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99;
         }
 
-        /* SAĞ TARAF: GENİŞ 3D OYUN EKRANI */
-        #game-viewport {
-            width: 70%;
-            height: 100%;
-            position: relative;
-        }
-        
-        #hud-overlay {
+        /* ALT BİLGİLENDİRME */
+        #controls-hint {
             position: absolute;
             bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.7);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #00f3ff;
             padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid #334155;
-            pointer-events: none;
-            font-family: monospace;
-            color: #10b981;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid #1e293b;
+            text-align: center;
+            z-index: 100;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
-    <div id="mission-control">
-        <div class="panel-header">🚀 KOMUTA GÖREV PANELİ</div>
-        
-        <div class="step-card active" onclick="selectStep(1)">
-            <div class="step-num">Aşama 1</div>
-            <div class="step-title">GÖREV ŞEFİ</div>
-            <div class="step-desc">"Hoş geldin Komutan! Roketini hazırla, Ay Üssü'nün temelini at!"</div>
-        </div>
-        
-        <div class="step-card" onclick="selectStep(2)">
-            <div class="step-num">Aşama 2</div>
-            <div class="step-title">ROKET TASARIM MERKEZİ</div>
-            <div class="step-desc">Kapsül, Yakıt Tankı, Motor ve Kanatçıkları birleştir.</div>
-        </div>
+    <div id="crosshair"></div>
 
-        <div class="step-card" onclick="selectStep(3)">
-            <div class="step-num">Aşama 3</div>
-            <div class="step-title">YAKIT LABORATUVARI</div>
-            <div class="step-desc">Milli Hibrit İtki (RP-1, Sıvı Hidrojen, Metan, LOX) analizleri.</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(4)">
-            <div class="step-num">Aşama 4</div>
-            <div class="step-title">FIRLATMA MERKEZİ</div>
-            <div class="step-desc">[W] tuşuna basarak motor gücünü %100'e çıkar ve fırlat!</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(5)">
-            <div class="step-num">Aşama 5</div>
-            <div class="step-title">DÜNYA YÖRÜNGESİ</div>
-            <div class="step-desc">Ay'a gitmeden önce Dünya yörüngesinde hız kazan.</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(6)">
-            <div class="step-num">Aşama 6</div>
-            <div class="step-title">AY TRANSFER YÖRÜNGESİ</div>
-            <div class="step-desc">Ok tuşlarıyla en uygun rotayı (Dengeli Rota) seç.</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(7)">
-            <div class="step-num">Aşama 7</div>
-            <div class="step-title">UZAY KİRLİLİĞİ GÖREVİ</div>
-            <div class="step-desc">Yoldaki eski uydu parçalarını toplayarak puan kazan!</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(8)">
-            <div class="step-num">Aşama 8</div>
-            <div class="step-title">AY'A KONTROLLÜ İNİŞ</div>
-            <div class="step-desc">Sert iniş (AYAP-1) veya Yumuşak iniş (AYAP-2) gerçekleştir.</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(9)">
-            <div class="step-num">Aşama 9</div>
-            <div class="step-title">BİLİMSEL KEŞİF</div>
-            <div class="step-desc">Rover ile Krater incelemesi, Regolit örneği ve Toprak analizi.</div>
-        </div>
-
-        <div class="step-card" onclick="selectStep(10)">
-            <div class="step-num">Aşama 10</div>
-            <div class="step-title">AY ÜSSÜ KURMA</div>
-            <div class="step-desc">Güneş Paneli, Yaşam Modülü ve Bilim Laboratuvarını kur!</div>
-        </div>
+    <div id="hud">
+        <div class="hud-title" id="hud-stage">GÖREV 1: ÜSSE ULAŞ</div>
+        <div class="hud-text" id="hud-desc">Ay yüzeyindesin. Karşıdaki fütüristik parlayan astronota (Görev Şefi) doğru YÜRÜ ve bilgi al!</div>
     </div>
 
-    <div id="game-viewport">
-        <div id="hud-overlay">TELEMETRİ: SİSTEM AKTİF | GÖREV: <span id="hud-task">AŞAMA 1</span></div>
+    <div id="controls-hint">
+        [W, A, S, D] ile Yürü | Fareyi Ekrana Tıklayıp Sürükleyerek Etrafa Bak | [E] Rokete Bin / Fırlat
     </div>
 
     <script>
-        // --- 1. 3D AYARLAR ---
-        const container = document.getElementById('game-viewport');
+        // --- 1. SAHNE VE GERÇEKÇİ ATMOSFER ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        container.appendChild(renderer.domElement);
+        scene.fog = new THREE.FogExp2(0x020208, 0.015); // Derin uzay pusu
 
-        // Aydınlatma
-        const ambientLight = new THREE.AmbientLight(0x444455);
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // Gerçekçi Işıklar
+        const ambientLight = new THREE.AmbientLight(0x111122, 0.6);
         scene.add(ambientLight);
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        sunLight.position.set(10, 10, 10);
+        
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        sunLight.position.set(30, 50, 10);
+        sunLight.castShadow = true;
         scene.add(sunLight);
 
-        // --- 2. 3D NESNELERİN OLUŞTURULMASI ---
-        // Dünya
-        const earthGeom = new THREE.SphereGeometry(5, 32, 32);
-        const earthMat = new THREE.MeshStandardMaterial({ color: 0x0055ff, wireframe: false });
-        const earth = new THREE.Mesh(earthGeom, earthMat);
-        earth.position.set(-15, 0, -10);
-        scene.add(earth);
+        // --- 2. GERÇEKÇİ AY YÜZEYİ (DOKULU TOPRAK) ---
+        const floorGeom = new THREE.PlaneGeometry(200, 200, 64, 64);
+        // Ay yüzeyine kraterli/engebeli hava katmak için tepe klasörleri oluşturma
+        const posAttr = floorGeom.attributes.position;
+        for (let i = 0; i < posAttr.count; i++) {
+            const vx = posAttr.getX(i);
+            const vy = posAttr.getY(i);
+            posAttr.setZ(i, Math.sin(vx * 0.1) * Math.cos(vy * 0.1) * 0.4); // Hafif engebeler
+        }
+        floorGeom.computeVertexNormals();
 
-        // Ay
-        const moonGeom = new THREE.SphereGeometry(4, 32, 32);
-        const moonMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.9 });
-        const moon = new THREE.Mesh(moonGeom, moonMat);
-        moon.position.set(15, 0, -5);
-        scene.add(moon);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9, metalness: 0.1 });
+        const floor = new THREE.Mesh(floorGeom, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        scene.add(floor);
 
-        // Uzay Aracı (Sizin şemadaki roket/uydu gövdesi)
-        const spacecraft = new THREE.Group();
-        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 2, 16), new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.6 }));
-        body.rotation.z = Math.PI / 2;
-        spacecraft.add(body);
+        // Gökyüzü / Yıldızlar
+        const starsGeom = new THREE.BufferGeometry();
+        const starPositions = new Float32Array(2000 * 3);
+        for(let i=0; i<2000*3; i++) starPositions[i] = (Math.random() - 0.5) * 400;
+        starsGeom.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starField = new THREE.Points(starsGeom, new THREE.PointsMaterial({color: 0xffffff, size: 0.3}));
+        scene.add(starField);
+
+        // --- 3. GERÇEKÇİ MODELLER: GÖREV ŞEFİ & AY ÜSSÜ & ROKET ---
         
-        // Mavi Güneş Panelleri
-        const panelMat = new THREE.MeshStandardMaterial({ color: 0x00ccff });
-        const p1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.6, 1.8), panelMat); p1.position.set(0,0,1.2); spacecraft.add(p1);
-        const p2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.6, 1.8), panelMat); p2.position.set(0,0,-1.2); spacecraft.add(p2);
-        
-        scene.add(spacecraft);
-        spacecraft.position.set(-15, 2, 0); // Dünya yakınında başlasın
+        // 1. GÖREV ŞEFİ (Karakter)
+        const chefGroup = new THREE.Group();
+        const chefBody = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 16), new THREE.MeshStandardMaterial({color: 0xffffff}));
+        chefBody.position.y = 1.5;
+        const chefVisor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 0.4), new THREE.MeshBasicMaterial({color: 0x00f3ff}));
+        chefVisor.position.set(0, 1.6, 0.4);
+        chefGroup.add(chefBody, chefVisor);
+        chefGroup.position.set(0, 0, -10); // Karşıda bekliyor
+        scene.add(chefGroup);
 
-        camera.position.set(0, 8, 20);
-        camera.lookAt(0, 0, 0);
+        // 2. AY ÜSSÜ (Fütüristik Kubbe/Dome)
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x334155, transparent: true, opacity: 0.7, roughness: 0.2}));
+        dome.position.set(-15, 0, -15);
+        scene.add(dome);
 
-        // --- 3. KLAVYE VE ETKİLEŞİM KONTROLLERİ ---
+        // 3. ROKET (AYAP Fırlatma Sistemi)
+        const rocket = new THREE.Group();
+        const rBody = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 5, 16), new THREE.MeshStandardMaterial({color: 0xdddddd, metalness: 0.8}));
+        rBody.position.y = 2.5;
+        const rCone = new THREE.Mesh(new THREE.ConeGeometry(0.6, 1.2, 16), new THREE.MeshStandardMaterial({color: 0xff0055}));
+        rCone.position.y = 5.6;
+        rocket.add(rBody, rCone);
+        rocket.position.set(15, 0, -15); // Sağ taraftaki fırlatma rampasında
+        scene.add(rocket);
+
+        // Roket Ateş Efekti
+        const fire = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2, 16), new THREE.MeshBasicMaterial({color: 0xff5500}));
+        fire.position.y = -1;
+        fire.rotation.x = Math.PI;
+        fire.visible = false;
+        rocket.add(fire);
+
+        // --- 4. RPG OYUNCU HAREKET MANTIĞI & FARE BAKIŞI ---
+        let player = { x: 0, z: 10, rotY: 0, rotX: 0, inRocket: false };
+        camera.position.set(player.x, 1.8, player.z); // Göz hizası
+
         const keys = {};
-        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
+        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; checkInteraction(e.key); });
         window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-        let activeStep = 1;
+        // Gelişmiş Fare Bakış Kontrolü (Mouse Look)
+        let isMouseDown = false;
+        window.addEventListener('mousedown', () => isMouseDown = true);
+        window.addEventListener('mouseup', () => isMouseDown = false);
+        window.addEventListener('mousemove', (e) => {
+            if (!isMouseDown || player.inRocket) return;
+            player.rotY -= e.movementX * 0.003;
+            player.rotX -= e.movementY * 0.003;
+            player.rotX = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.rotX)); // Kafayı çok yukarı/aşağı eğmesin
+        });
 
-        function selectStep(stepNum) {
-            activeStep = stepNum;
-            
-            // Kartların sınıflarını güncelle (görsel efekt için)
-            const cards = document.querySelectorAll('.step-card');
-            cards.forEach((card, idx) => {
-                if (idx === stepNum - 1) card.classList.add('active');
-                else card.classList.remove('active');
-            });
+        // --- 5. ETKİLEŞİMLİ GÖREV SİSTEMİ ---
+        let currentStage = 1;
 
-            document.getElementById('hud-task').innerText = "AŞAMA " + stepNum;
+        function checkInteraction(key) {
+            if (key.toLowerCase() === 'e') {
+                // Şefin yanındayken konuşma tetiklensin
+                const distToChef = camera.position.distanceTo(chefGroup.position);
+                if (distToChef < 3 && currentStage === 1) {
+                    currentStage = 2;
+                    document.getElementById('hud-stage').innerText = "GÖREV 2: ROKETE BİN";
+                    document.getElementById('hud-desc').innerText = "Şef: 'Komutan, AYAP-2 yumuşak iniş modülleri tamamlandı! Sağdaki milli rokete doğru ilerle ve binmek için [E]'ye bas!'";
+                    return;
+                }
 
-            // Seçilen aşamaya göre 3D kamerayı ve roketi konumlandır
-            if (stepNum === 1 || stepNum === 2 || stepNum === 3) {
-                // Roket tasarım ve fırlatma öncesi Dünya'ya yakın çekim
-                spacecraft.position.set(-15, 2, 0);
-                camera.position.set(-15, 5, 8);
-                camera.lookAt(spacecraft.position);
-            } else if (stepNum === 4 || stepNum === 5 || stepNum === 6 || stepNum === 7) {
-                // Yörünge ve Transfer hattı görünümü (Geniş Açı)
-                camera.position.set(0, 15, 25);
-                camera.lookAt(0, 0, 0);
-            } else {
-                // Ay'a iniş ve Ay üssü aşamaları (Ay'a yakın çekim)
-                spacecraft.position.set(13, 1, -2);
-                camera.position.set(15, 5, 8);
-                camera.lookAt(moon.position);
+                // Roketin yanındayken binme tetiklensin
+                const distToRocket = camera.position.distanceTo(rocket.position);
+                if (distToRocket < 4 && currentStage === 2) {
+                    player.inRocket = true;
+                    currentStage = 3;
+                    document.getElementById('hud-stage').innerText = "GÖREV 3: UZAYA FIRLAT";
+                    document.getElementById('hud-desc').innerText = "Sistem: Roket kokpitine girildi. Hibrit motor hazır! Tekrar [E] tuşuna basarak motorları ateşle ve Ay yörüngesine fırlat!";
+                    return;
+                }
+
+                // Roketi fırlatma tetiklenmesi
+                if (player.inRocket && currentStage === 3) {
+                    currentStage = 4;
+                    fire.visible = true;
+                    document.getElementById('hud-stage').innerText = "GÖREV TAMAMLANDI! 🚀";
+                    document.getElementById('hud-desc').innerText = "Milli Hibrit motor başarıyla ateşlendi! AYAP Uzay aracı Ay Transfer Yörüngesine giriyor. Türkiye göklerde!";
+                }
             }
         }
 
-        // --- 4. OYUN DÖNGÜSÜ ---
+        // --- 6. ANA DÖNGÜ (OYUN AKIŞI) ---
+        const clock = new THREE.Clock();
+
         function animate() {
             requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            const speed = 4 * delta;
 
-            // Dünya ve Ay dönsün
-            earth.rotation.y += 0.002;
-            moon.rotation.y += 0.004;
+            if (!player.inRocket) {
+                // Yürüme yönü hesaplama (Kameranın baktığı yöne doğru yürüme)
+                const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
+                const side = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
 
-            // Ok tuşları ve W tuşlarıyla serbest uçuş modu simülasyonu
-            if (keys['w']) spacecraft.position.x += 0.1;
-            if (keys['s']) spacecraft.position.x -= 0.1;
-            if (keys['arrowup']) spacecraft.position.y += 0.1;
-            if (keys['arrowdown']) spacecraft.position.y -= 0.1;
-            if (keys['arrowleft']) spacecraft.position.z -= 0.1;
-            if (keys['arrowright']) spacecraft.position.z += 0.1;
+                if (keys['w']) { player.x += forward.x * speed; player.z += forward.z * speed; }
+                if (keys['s']) { player.x -= forward.x * speed; player.z -= forward.z * speed; }
+                if (keys['a']) { player.x -= side.x * speed; player.z -= side.z * speed; }
+                if (keys['d']) { player.x += side.x * speed; player.z += side.z * speed; }
+
+                // Kamera Pozisyon Güncelleme
+                camera.position.x = player.x;
+                camera.position.z = player.z;
+
+                // Kamera Dönüşleri (Kafayı döndürme etkisi)
+                camera.rotation.set(0, 0, 0);
+                camera.rotation.y = player.rotY;
+                camera.rotation.x = player.rotX;
+            } else {
+                // Eğer roketteysek kamera rokete kilitlensin
+                camera.position.set(rocket.position.x, rocket.position.y + 3, rocket.position.z + 12);
+                camera.lookAt(rocket.position);
+
+                // Roket fırlatıldıysa yukarı doğru yükselsin
+                if (currentStage === 4) {
+                    rocket.position.y += 8 * delta;
+                    fire.scale.set(1, Math.random() * 0.4 + 0.8, 1);
+                }
+            }
 
             renderer.render(scene, camera);
         }
 
-        // Ekran boyutunu otomatik eşitleme
         window.addEventListener('resize', () => {
-            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
         animate();
