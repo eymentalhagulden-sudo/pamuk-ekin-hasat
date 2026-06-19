@@ -1,153 +1,209 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Akıllı Pamuk Tarım Sistemi</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYAP Uzay Görevi Simülasyonu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #050510;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 500px;
+            background: radial-gradient(circle, #0f172a 0%, #020617 100%);
+            border: 2px solid #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        /* Yıldızlar */
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+        /* Şef / Bilgi Paneli */
+        #ui-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(2, 6, 23, 0.85);
+            border: 1px solid #00ffcc;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+        #chef-title {
+            font-weight: bold;
+            color: #ff0055;
+            margin-bottom: 5px;
+        }
+        /* Ay */
+        #moon {
+            position: absolute;
+            right: -50px;
+            top: 150px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle at 30% 30%, #94a3b8, #475569);
+            border-radius: 50%;
+            box-shadow: inset -20px -20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(148, 163, 184, 0.4);
+        }
+        /* Uzay Aracı */
+        #spacecraft {
+            position: absolute;
+            left: 50px;
+            top: 220px;
+            width: 60px;
+            height: 40px;
+            background: #cbd5e1;
+            border: 2px solid #334155;
+            border-radius: 5px;
+            transition: transform 0.1s;
+        }
+        /* Güneş Panelleri */
+        #spacecraft::before, #spacecraft::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 12px;
+            background: repeating-linear-gradient(90deg, #1e3a8a, #1e40af 5px, #3b82f6 5px, #3b82f6 10px);
+            border: 1px solid #00ffcc;
+            left: 10px;
+        }
+        #spacecraft::before { top: -14px; }
+        #spacecraft::after { bottom: -14px; }
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url("https://images.unsplash.com/photo-1501004318641-b39e6451bec6") no-repeat center center/cover;
-    color: white;
-    text-align: center;
-}
-
-.overlay {
-    background: rgba(0, 80, 0, 0.75);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-h1 {
-    font-size: 40px;
-}
-
-select, button {
-    padding: 10px;
-    margin: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-}
-
-.card {
-    background: rgba(0,0,0,0.6);
-    padding: 20px;
-    margin: 20px auto;
-    width: 80%;
-    border-radius: 10px;
-}
-
-.notification {
-    background: #2ecc71;
-    padding: 15px;
-    margin-top: 20px;
-    border-radius: 8px;
-    display: none;
-    font-weight: bold;
-}
-</style>
+        /* Motor Ateşi */
+        .thruster {
+            position: absolute;
+            left: -15px;
+            top: 12px;
+            width: 15px;
+            height: 12px;
+            background: linear-gradient(to left, #ff7700, #ff0000);
+            clip-path: polygon(100% 0, 0 50%, 100% 100%);
+            display: none;
+        }
+        /* Kontroller */
+        #controls-hint {
+            margin-top: 15px;
+            color: #8892b0;
+            font-size: 14px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="overlay">
+    <div id="game-container">
+        <!-- Bilgi Ekranı -->
+        <div id="ui-panel">
+            <div id="chef-title">🛰️ GÖREV ŞEFİ PANELİ:</div>
+            <div id="dialog">Sistem yükleniyor...</div>
+        </div>
 
-<h1 id="title">Akıllı Pamuk Tarım Sistemi</h1>
+        <!-- Gök Cisimleri ve Karakterler -->
+        <div id="moon"></div>
+        <div id="spacecraft">
+            <div class="thruster" id="thruster"></div>
+        </div>
+    </div>
 
-<select id="language" onchange="changeLanguage()">
-    <option value="tr">Türkçe</option>
-    <option value="en">English</option>
-    <option value="de">Deutsch</option>
-    <option value="ar">العربية</option>
-</select>
+    <div id="controls-hint">Yön Tuşları (Ok Tuşları) ile uzay aracını hareket ettirerek Ay yörüngesine ulaşın!</div>
 
-<select id="province">
-    <option value="Sanliurfa">Şanlıurfa</option>
-    <option value="Adana">Adana</option>
-    <option value="Aydin">Aydın</option>
-    <option value="Izmir">İzmir</option>
-</select>
+    <script>
+        const dialogs = [
+            "Merhaba Kaptan! Ben Görev Şefi. Bugün AYAP-1 görevini başlatıyoruz!",
+            "AYAP-1 uydumuz, DeltaV üretimi milli HİBRİT motor kullanıyor. Çok güçlüdür!",
+            "Gördüğün gibi iki yanında mavi Güneş Panelleri var, uzayda asla enerjisiz kalmaz.",
+            "Şimdi ok tuşlarını kullan, motoru ateşle ve uydumuzu sağdaki AY'a ulaştır!"
+        ];
 
-<button onclick="measureData()">Verileri Ölç</button>
+        let currentDialogIndex = 0;
+        const dialogElement = document.getElementById('dialog');
+        const spacecraft = document.getElementById('spacecraft');
+        const thruster = document.getElementById('thruster');
+        
+        // Diyalog Sistemi
+        function showNextDialog() {
+            if (currentDialogIndex < dialogs.length) {
+                dialogElement.innerText = dialogs[currentDialogIndex];
+                currentDialogIndex++;
+                setTimeout(showNextDialog, 4000); // Her 4 saniyede bir yeni bilgi
+            }
+        }
+        setTimeout(showNextDialog, 1000);
 
-<div class="card">
-    <h2 id="aboutTitle">Proje Tanıtımı</h2>
-    <p id="aboutText">
-        Bu sistem pamuk ekimi ve hasat sürecini dijitalleştirir. 
-        Tarlaya yerleştirilen akıllı cihaz toprak nemini, hava sıcaklığını ölçer 
-        ve en uygun hasat zamanını hesaplayarak çiftçinin telefonuna bildirim gönderir.
-    </p>
-</div>
+        // Arka plana rastgele yıldızlar ekleme
+        const container = document.getElementById('game-container');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 800 + 'px';
+            star.style.top = Math.random() * 500 + 'px';
+            star.style.opacity = Math.random();
+            container.appendChild(star);
+        }
 
-<div class="card">
-    <h2>Cihaz Verileri</h2>
-    <p id="humidity">Nem: -</p>
-    <p id="temperature">Sıcaklık: -</p>
-    <p id="harvest">Hasat Zamanı: -</p>
-</div>
+        // Oyun Döngüsü ve Hareket Kontrolleri
+        let posX = 50;
+        let posY = 220;
+        const speed = 8;
+        let gameOver = false;
 
-<div class="notification" id="notification"></div>
+        const keys = {};
+        window.addEventListener('keydown', e => {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) {
+                e.preventDefault(); // Sayfanın kaymasını engelle
+            }
+            keys[e.key] = true;
+            if(e.key === "ArrowRight") thruster.style.display = 'block';
+        });
+        window.addEventListener('keyup', e => {
+            keys[e.key] = false;
+            if(e.key === "ArrowRight") thruster.style.display = 'none';
+        });
 
-</div>
+        function gameLoop() {
+            if (gameOver) return;
 
-<script>
-function measureData() {
-    let humidity = Math.floor(Math.random() * 40) + 40;
-    let temperature = Math.floor(Math.random() * 15) + 25;
+            if (keys['ArrowUp'] && posY > 80) posY -= speed;
+            if (keys['ArrowDown'] && posY < 440) posY += speed;
+            if (keys['ArrowLeft'] && posX > 10) posX -= speed;
+            if (keys['ArrowRight'] && posX < 730) posX += speed;
 
-    document.getElementById("humidity").innerText = "Nem: %" + humidity;
-    document.getElementById("temperature").innerText = "Sıcaklık: " + temperature + "°C";
+            spacecraft.style.left = posX + 'px';
+            spacecraft.style.top = posY + 'px';
 
-    let harvestTime = (humidity < 60 && temperature > 30) ? 
-        "Hasat için uygun zaman!" : 
-        "Henüz hasat zamanı değil.";
+            // Ay'a ulaştı mı kontrolü (Çarpma / Sert İniş Testi)
+            if (posX >= 600 && posY >= 110 && posY <= 350) {
+                gameOver = true;
+                document.getElementById('chef-title').innerText = "🎉 GÖREV BAŞARILI!";
+                dialogElement.innerHTML = "<strong>Tebrikler Kaptan!</strong> AYAP-1 Ay yörüngesine girip sert iniş yaptı ve bilimsel verileri topladı! <br>Sırada AYAP-2 var: Yumuşak iniş ve Rover (Gezgin) robotu ile Ay toprağı analizi!";
+                spacecraft.style.display = 'none';
+            }
 
-    document.getElementById("harvest").innerText = "Hasat Zamanı: " + harvestTime;
-
-    let province = document.getElementById("province").value;
-
-    let message = province + " için analiz tamamlandı. " + harvestTime;
-
-    let notification = document.getElementById("notification");
-    notification.style.display = "block";
-    notification.innerText = "📱 Bildirim: " + message;
-}
-
-function changeLanguage() {
-    let lang = document.getElementById("language").value;
-
-    if(lang === "tr") {
-        document.getElementById("title").innerText = "Akıllı Pamuk Tarım Sistemi";
-        document.getElementById("aboutTitle").innerText = "Proje Tanıtımı";
-        document.getElementById("aboutText").innerText =
-        "Bu sistem pamuk ekimi ve hasat sürecini dijitalleştirir. Tarlaya yerleştirilen akıllı cihaz toprak nemini, hava sıcaklığını ölçer ve en uygun hasat zamanını hesaplayarak çiftçinin telefonuna bildirim gönderir.";
-    }
-
-    if(lang === "en") {
-        document.getElementById("title").innerText = "Smart Cotton Farming System";
-        document.getElementById("aboutTitle").innerText = "Project Description";
-        document.getElementById("aboutText").innerText =
-        "This system digitalizes cotton cultivation and harvesting. The smart device placed in the field measures soil moisture and air temperature, calculates the optimal harvest time, and sends notifications to the farmer's phone.";
-    }
-
-    if(lang === "de") {
-        document.getElementById("title").innerText = "Intelligentes Baumwollsystem";
-        document.getElementById("aboutTitle").innerText = "Projektbeschreibung";
-        document.getElementById("aboutText").innerText =
-        "Dieses System digitalisiert den Baumwollanbau und die Ernte. Das intelligente Gerät misst Bodenfeuchtigkeit und Temperatur und sendet Benachrichtigungen an das Smartphone des Landwirts.";
-    }
-
-    if(lang === "ar") {
-        document.getElementById("title").innerText = "نظام زراعة القطن الذكي";
-        document.getElementById("aboutTitle").innerText = "وصف المشروع";
-        document.getElementById("aboutText").innerText =
-        "يقوم هذا النظام برقمنة زراعة وحصاد القطن. الجهاز الذكي يقيس رطوبة التربة ودرجة الحرارة ويرسل إشعارات إلى هاتف المزارع.";
-    }
-}
-</script>
-
+            requestAnimationFrame(gameLoop);
+        }
+        gameLoop();
+    </script>
 </body>
 </html>
