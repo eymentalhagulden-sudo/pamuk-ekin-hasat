@@ -3,57 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYAP 3D: Ay Üssü ve Roket Simülasyonu</title>
+    <title>AYAP 3D: Sesli Sinematik Uzay Görevi</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: monospace; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #010103; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* MODERN VE KÜÇÜK SİNEMATİK HUD */
+        /* ŞIK SİNEMATİK HUD */
         #hud {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(2, 6, 23, 0.85);
+            top: 25px;
+            left: 25px;
+            background: rgba(4, 10, 26, 0.85);
             border: 1px solid #00f3ff;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 18px;
+            border-radius: 10px;
             color: #fff;
-            width: 320px;
+            width: 350px;
             z-index: 100;
             pointer-events: none;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);
+            backdrop-filter: blur(8px);
         }
-        .hud-title { color: #ff0055; font-weight: bold; margin-bottom: 5px; font-size: 14px; text-transform: uppercase; }
-        .hud-text { color: #cbd5e1; font-size: 12px; line-height: 1.4; }
+        .hud-title { color: #ff0055; font-weight: bold; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .hud-text { color: #cbd5e1; font-size: 14px; line-height: 1.5; }
 
-        /* MERKEZİ HEDEF GÖSTERGESİ (FPS OYUNLARI GİBİ) */
+        /* FPS MERKEZİ HEDEF */
         #crosshair {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             transform: translate(-50%, -50%);
-            border: 2px solid rgba(0, 253, 255, 0.5);
+            border: 2px solid rgba(0, 243, 255, 0.6);
             border-radius: 50%;
             pointer-events: none;
             z-index: 99;
         }
 
-        /* ALT BİLGİLENDİRME */
+        /* ALT KONTROL PANELİ */
         #controls-hint {
             position: absolute;
-            bottom: 20px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            background: rgba(5, 5, 10, 0.85);
             color: #00f3ff;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 13px;
             border: 1px solid #1e293b;
             text-align: center;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -63,181 +65,215 @@
     <div id="crosshair"></div>
 
     <div id="hud">
-        <div class="hud-title" id="hud-stage">GÖREV 1: ÜSSE ULAŞ</div>
-        <div class="hud-text" id="hud-desc">Ay yüzeyindesin. Karşıdaki fütüristik parlayan astronota (Görev Şefi) doğru YÜRÜ ve bilgi al!</div>
+        <div class="hud-title" id="hud-stage">GÖREV 1: ŞEFLERLE BULUŞMA</div>
+        <div class="hud-text" id="hud-desc">Ay üssündesin. Tam karşıda duran gerçekçi insan hatlarına sahip Görev Şefi'nin yanına yürü ve konuşmak için [E] tuşuna bas! (Sesinizi açın)</div>
     </div>
 
     <div id="controls-hint">
-        [W, A, S, D] ile Yürü | Fareyi Ekrana Tıklayıp Sürükleyerek Etrafa Bak | [E] Rokete Bin / Fırlat
+        [W, A, S, D] Yürü | Tıklayıp Sürükleyerek Etrafa Bak | [E] Etkileşim / Rokete Bin
     </div>
 
     <script>
-        // --- 1. SAHNE VE GERÇEKÇİ ATMOSFER ---
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x020208, 0.015); // Derin uzay pusu
+        // --- 1. SESLİ KONUŞMA MOTORU (YAPAY ZEKA SESİ) ---
+        function sesliKonus(metin) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Önceki sesleri sustur
+                const u = new SpeechSynthesisUtterance(metin);
+                u.lang = 'tr-TR';
+                u.rate = 1.0; // Konuşma hızı
+                u.pitch = 1.0; // Ses tonu kalınlığı
+                window.speechSynthesis.speak(u);
+            }
+        }
 
-        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // --- 2. 3D SAHNE VE GERÇEKÇİ GRAFİKLER ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x04040c, 0.02); // Atmosfersiz derin uzay pusu
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
 
-        // Gerçekçi Işıklar
-        const ambientLight = new THREE.AmbientLight(0x111122, 0.6);
+        // Işıklandırma (Gelişmiş Gölgeler)
+        const ambientLight = new THREE.AmbientLight(0x1a1a2e, 0.8);
         scene.add(ambientLight);
         
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        sunLight.position.set(30, 50, 10);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.8);
+        sunLight.position.set(40, 60, 20);
         sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
         scene.add(sunLight);
 
-        // --- 2. GERÇEKÇİ AY YÜZEYİ (DOKULU TOPRAK) ---
-        const floorGeom = new THREE.PlaneGeometry(200, 200, 64, 64);
-        // Ay yüzeyine kraterli/engebeli hava katmak için tepe klasörleri oluşturma
+        // --- 3. KRATERLİ GERÇEKÇİ AY TOPRAĞI ---
+        const floorGeom = new THREE.PlaneGeometry(300, 300, 128, 128);
         const posAttr = floorGeom.attributes.position;
         for (let i = 0; i < posAttr.count; i++) {
             const vx = posAttr.getX(i);
             const vy = posAttr.getY(i);
-            posAttr.setZ(i, Math.sin(vx * 0.1) * Math.cos(vy * 0.1) * 0.4); // Hafif engebeler
+            // Karışık krater ve tümsek matematiksel efekti
+            let z = Math.sin(vx * 0.05) * Math.cos(vy * 0.05) * 1.2;
+            z += Math.sin(vx * 0.2) * 0.2; // İnce detaylar
+            posAttr.setZ(i, z);
         }
         floorGeom.computeVertexNormals();
 
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9, metalness: 0.1 });
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x556173, roughness: 0.95, metalness: 0.05 });
         const floor = new THREE.Mesh(floorGeom, floorMat);
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
         scene.add(floor);
 
-        // Gökyüzü / Yıldızlar
+        // Yıldız Haritası
         const starsGeom = new THREE.BufferGeometry();
-        const starPositions = new Float32Array(2000 * 3);
-        for(let i=0; i<2000*3; i++) starPositions[i] = (Math.random() - 0.5) * 400;
+        const starPositions = new Float32Array(3000 * 3);
+        for(let i=0; i<3000*3; i++) starPositions[i] = (Math.random() - 0.5) * 500;
         starsGeom.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starField = new THREE.Points(starsGeom, new THREE.PointsMaterial({color: 0xffffff, size: 0.3}));
-        scene.add(starField);
+        scene.add(new THREE.Points(starsGeom, new THREE.PointsMaterial({color: 0xffffff, size: 0.25})));
 
-        // --- 3. GERÇEKÇİ MODELLER: GÖREV ŞEFİ & AY ÜSSÜ & ROKET ---
+        // --- 4. DETAYLI VE GERÇEKÇİ MODELLER ---
         
-        // 1. GÖREV ŞEFİ (Karakter)
-        const chefGroup = new THREE.Group();
-        const chefBody = new THREE.Mesh(new THREE.SphereGeometry(0.6, 16, 16), new THREE.MeshStandardMaterial({color: 0xffffff}));
-        chefBody.position.y = 1.5;
-        const chefVisor = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.3, 0.4), new THREE.MeshBasicMaterial({color: 0x00f3ff}));
-        chefVisor.position.set(0, 1.6, 0.4);
-        chefGroup.add(chefBody, chefVisor);
-        chefGroup.position.set(0, 0, -10); // Karşıda bekliyor
-        scene.add(chefGroup);
+        // 1. GERÇEKÇİ İNSANİ ŞEF (Astronot Kıyafeti)
+        const chef = new THREE.Group();
+        // Kask ve Yüz
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 32, 32), new THREE.MeshStandardMaterial({color: 0xdddddd, roughness: 0.2}));
+        head.position.y = 1.7;
+        const visor = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x001122, metalness: 0.9, roughness: 0.1}));
+        visor.rotation.x = Math.PI / 2;
+        visor.position.set(0, 1.7, 0.15);
+        // Gövde ve Bacaklar
+        const body = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 1.0, 16), new THREE.MeshStandardMaterial({color: 0xffffff, roughness: 0.7}));
+        body.position.y = 1.0;
+        chef.add(head, visor, body);
+        chef.position.set(0, 0, -8);
+        scene.add(chef);
 
-        // 2. AY ÜSSÜ (Fütüristik Kubbe/Dome)
-        const dome = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x334155, transparent: true, opacity: 0.7, roughness: 0.2}));
-        dome.position.set(-15, 0, -15);
-        scene.add(dome);
+        // 2. DETAYLI GERÇEKÇİ AY ÜSSÜ (Ana Komuta Kubbesi)
+        const domeGroup = new THREE.Group();
+        const domeOuter = new THREE.Mesh(new THREE.SphereGeometry(10, 32, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x2d3748, transparent: true, opacity: 0.4, roughness: 0.1, metalness: 0.8}));
+        const domeFrame = new THREE.Mesh(new THREE.SphereGeometry(10.05, 16, 8, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x00f3ff, wireframe: true}));
+        domeGroup.add(domeOuter, domeFrame);
+        domeGroup.position.set(-25, 0, -20);
+        scene.add(domeGroup);
 
-        // 3. ROKET (AYAP Fırlatma Sistemi)
+        // 3. PARLAK METALİK MİLLİ ROKET (AYAP-Fırlatma Aracı)
         const rocket = new THREE.Group();
-        const rBody = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 5, 16), new THREE.MeshStandardMaterial({color: 0xdddddd, metalness: 0.8}));
-        rBody.position.y = 2.5;
-        const rCone = new THREE.Mesh(new THREE.ConeGeometry(0.6, 1.2, 16), new THREE.MeshStandardMaterial({color: 0xff0055}));
-        rCone.position.y = 5.6;
-        rocket.add(rBody, rCone);
-        rocket.position.set(15, 0, -15); // Sağ taraftaki fırlatma rampasında
+        const rMain = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 6, 32), new THREE.MeshStandardMaterial({color: 0xeeeeee, metalness: 0.8, roughness: 0.2}));
+        rMain.position.y = 3;
+        const rCone = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.5, 32), new THREE.MeshStandardMaterial({color: 0xff0055, metalness: 0.5}));
+        rCone.position.y = 6.75;
+        // Kanatçıklar
+        const finMat = new THREE.MeshStandardMaterial({color: 0x111111});
+        const fin1 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.5, 1.5), finMat); fin1.position.set(0, 0.75, 0.8);
+        const fin2 = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.5, 1.5), finMat); fin2.position.set(0, 0.75, -0.8);
+        rocket.add(rMain, rCone, fin1, fin2);
+        rocket.position.set(20, 0, -20); // Sağ tarafta bekliyor
         scene.add(rocket);
 
-        // Roket Ateş Efekti
-        const fire = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2, 16), new THREE.MeshBasicMaterial({color: 0xff5500}));
-        fire.position.y = -1;
+        // Roket İtki Alevi
+        const fire = new THREE.Mesh(new THREE.ConeGeometry(0.6, 3, 16), new THREE.MeshBasicMaterial({color: 0xff4400, transparent: true, opacity: 0.9}));
+        fire.position.y = -1.5;
         fire.rotation.x = Math.PI;
         fire.visible = false;
         rocket.add(fire);
 
-        // --- 4. RPG OYUNCU HAREKET MANTIĞI & FARE BAKIŞI ---
-        let player = { x: 0, z: 10, rotY: 0, rotX: 0, inRocket: false };
-        camera.position.set(player.x, 1.8, player.z); // Göz hizası
+        // --- 5. BİRİNCİ ŞAHIS HAREKET VE BAKMA KONTROLLERİ ---
+        let player = { x: 0, z: 12, rotY: 0, rotX: 0, inRocket: false };
+        camera.position.set(player.x, 1.75, player.z); // Tam insan göz hizası
 
         const keys = {};
-        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; checkInteraction(e.key); });
+        window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; handleAction(e.key); });
         window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-        // Gelişmiş Fare Bakış Kontrolü (Mouse Look)
         let isMouseDown = false;
         window.addEventListener('mousedown', () => isMouseDown = true);
         window.addEventListener('mouseup', () => isMouseDown = false);
         window.addEventListener('mousemove', (e) => {
             if (!isMouseDown || player.inRocket) return;
-            player.rotY -= e.movementX * 0.003;
-            player.rotX -= e.movementY * 0.003;
-            player.rotX = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.rotX)); // Kafayı çok yukarı/aşağı eğmesin
+            player.rotY -= e.movementX * 0.0025;
+            player.rotX -= e.movementY * 0.0025;
+            player.rotX = Math.max(-Math.PI/3, Math.min(Math.PI/3, player.rotX));
         });
 
-        // --- 5. ETKİLEŞİMLİ GÖREV SİSTEMİ ---
-        let currentStage = 1;
+        // --- 6. SESLİ GÖREV YÖNETİMİ ---
+        let gameStage = 1;
 
-        function checkInteraction(key) {
+        function handleAction(key) {
             if (key.toLowerCase() === 'e') {
-                // Şefin yanındayken konuşma tetiklensin
-                const distToChef = camera.position.distanceTo(chefGroup.position);
-                if (distToChef < 3 && currentStage === 1) {
-                    currentStage = 2;
-                    document.getElementById('hud-stage').innerText = "GÖREV 2: ROKETE BİN";
-                    document.getElementById('hud-desc').innerText = "Şef: 'Komutan, AYAP-2 yumuşak iniş modülleri tamamlandı! Sağdaki milli rokete doğru ilerle ve binmek için [E]'ye bas!'";
+                // 1. Şefle Konuşma
+                const distToChef = camera.position.distanceTo(chef.position);
+                if (distToChef < 3.5 && gameStage === 1) {
+                    gameStage = 2;
+                    document.getElementById('hud-stage').innerText = "GÖREV 2: ROKETE İLERLE VE BİN";
+                    const metin = "Hoş geldin Komutan! Ben Görev Şefi. AYAP iki yumuşak iniş sistemlerimiz ve yerli rover aracımız fırlatmaya hazır. Şimdi sağ tarafta duran fırlatma rampasındaki milli rokete doğru yürü ve içine binmek için tekrar e tuşuna bas!";
+                    document.getElementById('hud-desc').innerText = "Şef (Sesli): " + metin;
+                    sesliKonus(metin);
                     return;
                 }
 
-                // Roketin yanındayken binme tetiklensin
+                // 2. Rokete Binme
                 const distToRocket = camera.position.distanceTo(rocket.position);
-                if (distToRocket < 4 && currentStage === 2) {
+                if (distToRocket < 5 && gameStage === 2) {
                     player.inRocket = true;
-                    currentStage = 3;
-                    document.getElementById('hud-stage').innerText = "GÖREV 3: UZAYA FIRLAT";
-                    document.getElementById('hud-desc').innerText = "Sistem: Roket kokpitine girildi. Hibrit motor hazır! Tekrar [E] tuşuna basarak motorları ateşle ve Ay yörüngesine fırlat!";
+                    gameStage = 3;
+                    document.getElementById('hud-stage').innerText = "GÖREV 3: HİBRİT MOTORU ATEŞLE";
+                    const metin = "Kokpite giriş yapıldı. Tüm telemetri hatları kararlı. Son hazırlıklar tamamlandı. Kalkışı başlatmak için son kez e tuşuna bas ve motorları ateşle!";
+                    document.getElementById('hud-desc').innerText = "Sistem (Sesli): " + metin;
+                    sesliKonus(metin);
                     return;
                 }
 
-                // Roketi fırlatma tetiklenmesi
-                if (player.inRocket && currentStage === 3) {
-                    currentStage = 4;
+                // 3. Roketi Kalkışa Geçirme
+                if (player.inRocket && gameStage === 3) {
+                    gameStage = 4;
                     fire.visible = true;
-                    document.getElementById('hud-stage').innerText = "GÖREV TAMAMLANDI! 🚀";
-                    document.getElementById('hud-desc').innerText = "Milli Hibrit motor başarıyla ateşlendi! AYAP Uzay aracı Ay Transfer Yörüngesine giriyor. Türkiye göklerde!";
+                    document.getElementById('hud-stage').innerText = "GÖREV BAŞARILI 🚀";
+                    const metin = "Ateşleme başarılı! Milli hibrit motor tam güç çalışıyor. AYAP uzay aracı Ay yörüngesine doğru tırmanışa geçti! Tebrikler komutan, Türkiye uzayda!";
+                    document.getElementById('hud-desc').innerText = "Sistem (Sesli): " + metin;
+                    sesliKonus(metin);
                 }
             }
         }
 
-        // --- 6. ANA DÖNGÜ (OYUN AKIŞI) ---
+        // --- 7. GERÇEK ZAMANLI OYUN DÖNGÜSÜ ---
         const clock = new THREE.Clock();
 
         function animate() {
             requestAnimationFrame(animate);
             const delta = clock.getDelta();
-            const speed = 4 * delta;
+            const currentSpeed = 4.5 * delta;
 
             if (!player.inRocket) {
-                // Yürüme yönü hesaplama (Kameranın baktığı yöne doğru yürüme)
+                // Kamera açısına göre yürüme yön vektörleri
                 const forward = new THREE.Vector3(0, 0, -1).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
                 const side = new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), player.rotY);
 
-                if (keys['w']) { player.x += forward.x * speed; player.z += forward.z * speed; }
-                if (keys['s']) { player.x -= forward.x * speed; player.z -= forward.z * speed; }
-                if (keys['a']) { player.x -= side.x * speed; player.z -= side.z * speed; }
-                if (keys['d']) { player.x += side.x * speed; player.z += side.z * speed; }
+                if (keys['w']) { player.x += forward.x * currentSpeed; player.z += forward.z * currentSpeed; }
+                if (keys['s']) { player.x -= forward.x * currentSpeed; player.z -= forward.z * currentSpeed; }
+                if (keys['a']) { player.x -= side.x * currentSpeed; player.z -= side.z * currentSpeed; }
+                if (keys['d']) { player.x += side.x * currentSpeed; player.z += side.z * currentSpeed; }
 
-                // Kamera Pozisyon Güncelleme
+                // Pozisyon ve Kafa Dönüşü Senkronu
                 camera.position.x = player.x;
                 camera.position.z = player.z;
-
-                // Kamera Dönüşleri (Kafayı döndürme etkisi)
                 camera.rotation.set(0, 0, 0);
                 camera.rotation.y = player.rotY;
                 camera.rotation.x = player.rotX;
+                
+                // Şef oyuncuya doğru baksın (Gerçekçilik detayı)
+                chef.lookAt(player.x, chef.position.y, player.z);
             } else {
-                // Eğer roketteysek kamera rokete kilitlensin
-                camera.position.set(rocket.position.x, rocket.position.y + 3, rocket.position.z + 12);
+                // Roket takibi için sinematik dış kamera açısı
+                camera.position.set(rocket.position.x, rocket.position.y + 4, rocket.position.z + 15);
                 camera.lookAt(rocket.position);
 
-                // Roket fırlatıldıysa yukarı doğru yükselsin
-                if (currentStage === 4) {
-                    rocket.position.y += 8 * delta;
-                    fire.scale.set(1, Math.random() * 0.4 + 0.8, 1);
+                // Ateşleme yapıldıysa roketi dikey fırlat
+                if (gameStage === 4) {
+                    rocket.position.y += 10 * delta;
+                    fire.scale.set(1, Math.random() * 0.5 + 0.8, 1); // Titreyen alev efekti
                 }
             }
 
